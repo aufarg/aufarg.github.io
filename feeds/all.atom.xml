@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Core Dumps</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2017-02-03T01:48:49+07:00</updated><entry><title>BTRFS: Access Beyond End of Device</title><link href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="alternate"></link><published>2017-02-03T01:48:49+07:00</published><updated>2017-02-03T01:48:49+07:00</updated><author><name>aufarg</name></author><id>tag:aufarg.github.io,2017-02-03:/btrfs-access-beyond-end-of-device.html</id><summary type="html">&lt;p&gt;What's the scariest thing that happened in your life? In this post I want to
+share one of the scariest thing made me anxious: BTRFS filesystem suddenly
+attempt to access beyond end of device (at least that's what the kernel log
+says). This made BTRFS auto-remount the device into read-only …&lt;/p&gt;</summary><content type="html">&lt;p&gt;What's the scariest thing that happened in your life? In this post I want to
+share one of the scariest thing made me anxious: BTRFS filesystem suddenly
+attempt to access beyond end of device (at least that's what the kernel log
+says). This made BTRFS auto-remount the device into read-only. And it just
+happened I was messing up with my gpg secret keys (which I used to encrypt
+some important passwords) and by the time I realized the problem the keyfile
+has become a junk in the said device. Right now, I already solved the
+problem with some methods which luckily available to me. So here's what
+happened and what I do to fix it:&lt;/p&gt;
+&lt;p&gt;I was inspecting my gpg secret keys file, just wanted to see what kind of
+file it is in binary. I kind of like randomly seeing binary files (I know
+it's weird) to waste time. It's a great joy looking at those unreadable,
+otherworldly junk text until when I saved vim gave me warning that it cannot
+sync with the filesystem. Wait what? I wasn't even changing the file so what
+could happened? Luckily the buffer on vim is not closed yet (nice error
+handling vim devs!), and I could copy the entire content of my secret keys
+file to clipboard. Although, where should I put it now? I tried saving into
+some other file in my home folder and it gave the same error. So I recall
+that these kind of weird errors usually born from some kernel component and
+look what I've got in system log:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Feb 01 03:08:01 Tyria kernel: BTRFS error (device dm-1): bdev
+/dev/mapper/Arch-home errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
+Feb 01 03:08:01 Tyria kernel: attempt to access beyond end of device
+Feb 01 03:08:01 Tyria kernel: dm-1: rw=536871000, want=329009280,
+limit=329007104
+Feb 01 03:08:01 Tyria kernel: BTRFS error (device dm-1): bdev
+/dev/mapper/Arch-home errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
+Feb 01 03:08:01 Tyria kernel: BTRFS: error (device dm-1) in
+btrfs_commit_transaction:2227: errno=-5 IO failure (Error while writing
+out transaction)
+Feb 01 03:08:01 Tyria kernel: BTRFS info (device dm-1): forced readonly
+Feb 01 03:08:01 Tyria kernel: BTRFS warning (device dm-1): Skipping commit
+of aborted transaction.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I DO know that BTRFS is still experimental, and I kind of embrace the errors
+that may come to me. But... I didn't expect the kind of error where the
+filesystem tried to access beyond bounds.  Ok, what happened is happened,
+but for now I need to somehow save my keyring first and looking at the error
+message I kind of guess it just happened on my /dev/Arch/home device, I
+might try saving it on /dev/Arch/root and voila! it works! Good now I can go
+on to debugging and fixing my filesystem.&lt;/p&gt;
+&lt;p&gt;Actually, the first time I read the error, I don't even understand why it
+attempt to access something beyond the end of device. It doesn't even make
+sense, and I thought it tried to allocate new blocks somewhere outside the
+device (which still doesn't make sense, because if the fs is full it should
+give an error instead of attempting to write). I don't know what caused
+BTRFS to act like that and just plain search it on the web which solutions
+varies and after reading the problems again, they're differ too. Apparently,
+this error message is given for various problem.&lt;/p&gt;
+&lt;p&gt;Since there's no specific problem related to the error message, I just tried
+the basic &lt;code&gt;btrfs scrub start &amp;lt;path&amp;gt;&lt;/code&gt; to find something. But then it was
+aborted in, like, 5 seconds and only scrubbed 54 MiB of space. Of course my
+filesystem is waaay more than that. And doing that gives new but same errors
+as before. So I guess what happened is when it's trying to scrub, there's
+some file that is out of bound and boom, there goes the errors.&lt;/p&gt;
+&lt;p&gt;So now, how do I access them then? Luckily, I've got a nice logical volume
+(LV) layout like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;start ---------------------------------------- end
+      |    root    |    home    |    swap    |
+                          ^
+                     problematic
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thus, my plan is remove the &lt;code&gt;swap&lt;/code&gt; LV, extend the &lt;code&gt;home&lt;/code&gt; LV, somehow gather
+all the files' bits into the start of the LV, then shrink the &lt;code&gt;home&lt;/code&gt; back,
+and recreate the swap.&lt;/p&gt;
+&lt;p&gt;Okay, here we go! First of all, remove the &lt;code&gt;swap&lt;/code&gt; LV and extend the &lt;code&gt;home&lt;/code&gt;
+LV:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# swapoff /dev/swap
+# lvremove /dev/swap
+# lvextend -l +100%FREE /dev/home
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The layout become like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;start ---------------------------------------- end
+      |    root    |           home          |
+                                 ^
+                            problematic
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After that, I use &lt;code&gt;btrfs scrub start /dev/home&lt;/code&gt; to see if everything is
+fine. Since I'm not patient, I run &lt;code&gt;watch btrfs scrub status /dev/home&lt;/code&gt; so I
+can monitor it. 10 Gigs, 30 Gigs, 50 Gigs, ..., and some minutes later it's
+done! Nice, so the files are really goes beyond the end &lt;code&gt;/dev/home&lt;/code&gt; LV and
+we can try to gather the files. How do we do that? Fortunately, BTRFS
+provides an online defragment tool with &lt;code&gt;btrfs filesystem defragment
+&amp;lt;partition&amp;gt;&lt;/code&gt;. At this point, I'm not really sure how BTRFS defragment works.
+Usually it works like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="defragment illustration" src="https://upload.wikimedia.org/wikipedia/commons/d/d0/FragmentationDefragmentation.gif" title="Defragment Illustration"&gt;&lt;/p&gt;
+&lt;p&gt;It's usually implementation dependent, but nothing to lose right? (unless
+the defragment feature is still experimental and then all my data lose
+T_T). So I ran &lt;code&gt;btrfs filesystem defragment /dev/home&lt;/code&gt;, and then wait till
+it's done. How to check if it DOES worked? I don't know. Let's just try
+return the LVs like before and then run BTRFS scrub:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# lvresize -L &amp;lt;previous /dev/home size&amp;gt; /dev/home
+# lvcreate -L &amp;lt;previous /dev/swap size&amp;gt; -n swap &amp;lt;group name&amp;gt;
+# mkswap /dev/swap
+# swapon /dev/swap
+# btrfs scrub start /dev/home
+# watch btrfs scrub status /dev/home
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After a moment, it says all the filesystem is checked and no errors. Yay! It
+does worked afterall. It sure is scary when my keyring almost gone, but it's
+fun trying to fix the problem (although I don't know if this is truly a fix
+or not). With that said, I think I can fix this because I'm lucky that right
+after my &lt;code&gt;/dev/home&lt;/code&gt; LV is my swap LV so I can remove it. I wonder what
+should I do if it's not a swap LV (like, if the &lt;code&gt;/dev/root&lt;/code&gt; trying to access
+&lt;code&gt;/dev/home&lt;/code&gt;)?&lt;/p&gt;</content></entry><entry><title>Implementation vs Design</title><link href="https://aufarg.github.io/implementation-vs-design.html" rel="alternate"></link><published>2017-01-18T02:30:24+07:00</published><updated>2017-01-18T02:30:24+07:00</updated><author><name>aufarg</name></author><id>tag:aufarg.github.io,2017-01-18:/implementation-vs-design.html</id><summary type="html">&lt;p&gt;In my school, there's a common dogma that software implementation is easy,
+the hard part is designing. This dogma emerge as I take software engineering
+classes. The lecturers keep a big emphasize on how cool to design a software
+and how lame to implement a software. For me, I always …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In my school, there's a common dogma that software implementation is easy,
+the hard part is designing. This dogma emerge as I take software engineering
+classes. The lecturers keep a big emphasize on how cool to design a software
+and how lame to implement a software. For me, I always confused about that
+dogma. Mostly because I don't know which processes are design and which are
+implementation. But I asked my friends and they're confused too. So, I discuss
+with my friends and came up with these thoughts.&lt;/p&gt;
+&lt;p&gt;The definition given to me is implementation is a process to realized the
+design and it's actually only the "coding" part. "Coding" here means to write
+the code, that's it. But it doesn't make sense since the person who do the
+design and the implementation is different. That means if the one who
+implements only write the code, the design specification should consists of
+detailed algorithm (that is, describe the program action by action) in another
+language (most likely natural language or pseudocode).  It's weird because why
+would the designer write the code in some language just to be rewritten again
+in some programming language?&lt;/p&gt;
+&lt;p&gt;Okay, maybe the language that's being used to create the design document is
+easier to learn and "easier" to understand. But it's still inefficient
+because no matter what language you write it with, the "coder" WILL ask you
+about some part of the design (that is, the meaning particular sequence of
+action) because you can't always translate an action between the design
+document language and the programming language and the "coder" will need to
+make sure that they have understand what you mean. This kind of
+communication will slow down the development process and it's not efficient.&lt;/p&gt;
+&lt;p&gt;One argument is that since the "coder" will have lower salary than the
+designer (since "coding" is easier"), we can lower the budget too. Well, if
+the design document is written action by action, the rate that design
+document created will be the same as (if not longer than) the
+implementation (designing requires thinking, "coding" can take a look at
+reference). Unless we want the implementation be stuck waiting on the
+design, we need to have many designer too so, no, we actually need more
+budget (and still inefficient too).&lt;/p&gt;
+&lt;p&gt;I guess I just misheard my lecturers and that's not what they meant. So I'll
+just the one in
+&lt;a href="https://en.wikipedia.org/wiki/Software_implementation"&gt;wikipedia&lt;/a&gt;: software
+implementation (as a verb) is "the process of computer programming". The
+&lt;a href="https://en.wikipedia.org/wiki/Computer_programming"&gt;computer programming&lt;/a&gt;
+page defines programming as "activities such as analysis, developing
+understanding, generating algorithms, verification of requirements of
+algorithms including their correctness and resources consumption, and
+implementation (commonly referred to as coding) of algorithms in a target
+programming language".&lt;/p&gt;
+&lt;p&gt;So, "coding" is part of implementation. But implementation includes so much
+more than that. The person who do the implementation (let's call them the
+programmer) will need to understand how the program will work. In fact,
+according to the definition, the programmer's understanding of the language
+also determines the correctness of the implementation. I think it's
+also important to get the correctness of the implementation, not just the
+correctness on the concept. Also, while concept is nice, sometimes
+understanding of implementations can let you create a more practical concept
+(even though messier) than the neat concept. This is the case (or at least
+similar) with OSI vs IP described in &lt;a href="https://www.goodreads.com/book/show/166190.Computer_Networks"&gt;Computer
+Networks&lt;/a&gt; by
+Andrew Tanembaum.&lt;/p&gt;
+&lt;p&gt;What I'm trying to say here is that software implementation does not
+necessarily easier than software design, it may deal with something
+deterministic and the answer is already there, but you still need to KNOW
+the knowledge to do that. It may not require as much as creativity as
+software designing, but hey, you won't say being a doctor is easy right?
+(and if doctor use their creativity on their job, I'll be shit scared)&lt;/p&gt;
+&lt;p&gt;But maybe it's just me that is too stupid to understand what my lecturers mean.
+It's just, I'm sad that my school teaching me to lookdown on someone's job,
+regardless if it's easier or not. I always think it's best to respect any
+job and don't compare which is harder/cooler/profitable-r/yadayada, as
+long as the job is doing something good to humanity.&lt;/p&gt;</content></entry></feed>

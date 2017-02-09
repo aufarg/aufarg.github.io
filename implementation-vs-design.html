@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Core Dumps</title>
+        <!-- Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=The+Girl+Next+Door' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Marcellus' rel='stylesheet' type='text/css'>
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.css" type="text/css" />
+        <meta charset="utf-8" />
+      
+
+        <!-- Javascript-->
+        <script async src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+        <script async type="text/javascript"> 
+        $(function() {
+            function invisibleMenu() {
+                var now = 0;
+                var pixels = 300;
+                var opacity = -1;
+
+                var move = function() {
+                    now = $(window).scrollTop();
+                    if (now > pixels && opacity !== 0)
+                        opacity = 0;
+                    else if (now < pixels){
+                        // Depends on the position not if scrolls down or up
+                        opacity = (1 - now/pixels);
+                    }
+                    $("div.navigation").css({"opacity": opacity});
+                }
+                $(window).scroll(move);
+                move();
+            }
+            invisibleMenu();
+          });
+          </script> 
+</head>
+
+<body id="index" class="home">
+     <div class="navigation">
+        <ol class="nav">
+          <li class="current"><a href="https://aufarg.github.io">Blog</a> </li>
+          <li><a href="https://aufarg.github.io/archives.html">Archive</a></li>
+          <li><a href="https://aufarg.github.io/tags.html">Tags</a> </li>
+          <li><a href="">RSS</a> </li>
+        </ol>
+      </div>
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">Core Dumps <strong></strong></a></div>
+        </header><!-- /#banner -->
+        <nav id="menu"><ul>
+        </ul></nav><!-- /#menu -->
+        <div class="box">
+<section id="content" class="body">
+  <header class="post">
+    <h1 class="entry-title">
+      Implementation vs Design
+    </h1>
+  </header>
+  <footer class="post-info">
+    <abbr>
+      Wed 18 January 2017 
+         By <a class="url fn" href="https://aufarg.github.io/author/aufarg.html">aufarg</a>
+  
+    </abbr>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <p>In my school, there's a common dogma that software implementation is easy,
+the hard part is designing. This dogma emerge as I take software engineering
+classes. The lecturers keep a big emphasize on how cool to design a software
+and how lame to implement a software. For me, I always confused about that
+dogma. Mostly because I don't know which processes are design and which are
+implementation. But I asked my friends and they're confused too. So, I discuss
+with my friends and came up with these thoughts.</p>
+<p>The definition given to me is implementation is a process to realized the
+design and it's actually only the "coding" part. "Coding" here means to write
+the code, that's it. But it doesn't make sense since the person who do the
+design and the implementation is different. That means if the one who
+implements only write the code, the design specification should consists of
+detailed algorithm (that is, describe the program action by action) in another
+language (most likely natural language or pseudocode).  It's weird because why
+would the designer write the code in some language just to be rewritten again
+in some programming language?</p>
+<p>Okay, maybe the language that's being used to create the design document is
+easier to learn and "easier" to understand. But it's still inefficient
+because no matter what language you write it with, the "coder" WILL ask you
+about some part of the design (that is, the meaning particular sequence of
+action) because you can't always translate an action between the design
+document language and the programming language and the "coder" will need to
+make sure that they have understand what you mean. This kind of
+communication will slow down the development process and it's not efficient.</p>
+<p>One argument is that since the "coder" will have lower salary than the
+designer (since "coding" is easier"), we can lower the budget too. Well, if
+the design document is written action by action, the rate that design
+document created will be the same as (if not longer than) the
+implementation (designing requires thinking, "coding" can take a look at
+reference). Unless we want the implementation be stuck waiting on the
+design, we need to have many designer too so, no, we actually need more
+budget (and still inefficient too).</p>
+<p>I guess I just misheard my lecturers and that's not what they meant. So I'll
+just the one in
+<a href="https://en.wikipedia.org/wiki/Software_implementation">wikipedia</a>: software
+implementation (as a verb) is "the process of computer programming". The
+<a href="https://en.wikipedia.org/wiki/Computer_programming">computer programming</a>
+page defines programming as "activities such as analysis, developing
+understanding, generating algorithms, verification of requirements of
+algorithms including their correctness and resources consumption, and
+implementation (commonly referred to as coding) of algorithms in a target
+programming language".</p>
+<p>So, "coding" is part of implementation. But implementation includes so much
+more than that. The person who do the implementation (let's call them the
+programmer) will need to understand how the program will work. In fact,
+according to the definition, the programmer's understanding of the language
+also determines the correctness of the implementation. I think it's
+also important to get the correctness of the implementation, not just the
+correctness on the concept. Also, while concept is nice, sometimes
+understanding of implementations can let you create a more practical concept
+(even though messier) than the neat concept. This is the case (or at least
+similar) with OSI vs IP described in <a href="https://www.goodreads.com/book/show/166190.Computer_Networks">Computer
+Networks</a> by
+Andrew Tanembaum.</p>
+<p>What I'm trying to say here is that software implementation does not
+necessarily easier than software design, it may deal with something
+deterministic and the answer is already there, but you still need to KNOW
+the knowledge to do that. It may not require as much as creativity as
+software designing, but hey, you won't say being a doctor is easy right?
+(and if doctor use their creativity on their job, I'll be shit scared)</p>
+<p>But maybe it's just me that is too stupid to understand what my lecturers mean.
+It's just, I'm sad that my school teaching me to lookdown on someone's job,
+regardless if it's easier or not. I always think it's best to respect any
+job and don't compare which is harder/cooler/profitable-r/yadayada, as
+long as the job is doing something good to humanity.</p>
+  </div><!-- /.entry-content -->
+</section>
+            <hr/>
+            <footer id="contentinfo" class="footer">
+                <div>
+                    <a href="https://aufarg.github.io">aufarg</a> (2012)
+                </div>
+                <div>
+                    This work is licensed under <a rel="license" href="http://opensource.org/licenses/bsd-3-clause">3 clause BSD</a>. Source code available on <a rel="source code" href="https://github.com/slok/blog">Github</a>
+                </div>
+                <div>
+                    powered by <a href="http://getpelican.com/">Pelican</a>
+                    and <a href="http://python.org">Python</a>. 
+                    <a href="http://github.com/slok/iris">Theme</a> by <a href="http://xlarrakoetxea.org">Xabier Larrakoetxea</a> based on <a href="http://flask.pocoo.org/">Flask</a> theme
+                </div>
+                <div>
+                    Social icons (font awesome) by <a href="http://fortawesome.github.com/Font-Awesome/"> fort awesome</a>.
+                    <a href="http://www.google.com/webfonts/specimen/The+Girl+Next+Door">Title</a>, <a href="http://www.google.com/webfonts/specimen/Marcellus">headers</a> and <a href="http://www.google.com/webfonts/specimen/Inconsolata">source code</a> fonts by google fonts
+                </div>
+                <div class="social">
+                        <a href="#"><i class="icon-You can add links in your config file"></i>  </a>
+                        <a href="#"><i class="icon-Another social link"></i>  </a>
+                </div>
+            </footer><!-- /#contentinfo -->
+        </div>
+        <!--Add statistycs-->
+
+</body>
+</html>
