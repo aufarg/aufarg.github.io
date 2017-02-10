@@ -70,26 +70,35 @@
     </abbr>
   </footer><!-- /.post-info -->
   <div class="entry-content">
-    <p>What's the scariest thing that happened in your life? In this post I want to
-share one of the scariest thing made me anxious: BTRFS filesystem suddenly
-attempt to access beyond end of device (at least that's what the kernel log
-says). This made BTRFS auto-remount the device into read-only. And it just
-happened I was messing up with my gpg secret keys (which I used to encrypt
-some important passwords) and by the time I realized the problem the keyfile
-has become a junk in the said device. Right now, I already solved the
-problem with some methods which luckily available to me. So here's what
-happened and what I do to fix it:</p>
-<p>I was inspecting my gpg secret keys file, just wanted to see what kind of
-file it is in binary. I kind of like randomly seeing binary files (I know
-it's weird) to waste time. It's a great joy looking at those unreadable,
-otherworldly junk text until when I saved vim gave me warning that it cannot
-sync with the filesystem. Wait what? I wasn't even changing the file so what
-could happened? Luckily the buffer on vim is not closed yet (nice error
-handling vim devs!), and I could copy the entire content of my secret keys
-file to clipboard. Although, where should I put it now? I tried saving into
-some other file in my home folder and it gave the same error. So I recall
+    <p>TL;DR: There's a problem in my filesystem and it made my important
+file corrupted.</p>
+<hr>
+<h5><em>What's the scariest thing that happened in your life?</em></h5>
+<p>In this post I want to share one of the scariest thing that happened to me:
+BTRFS filesystem suddenly attempt to access beyond end of device and somehow it
+made my GnuPG keyring into junk. GnuPG keyring is the one file that contains
+key for public-key cryptography. Attempting to access beyond the end of device
+made BTRFS auto-remount the device into read-only. And it happened right when
+I'm playing with my gpg keyring (which I used to encrypt some important
+passwords).  By the time I realized the problem, the keyfile has become junk in
+the said device. Right now, I already solved the problem with some methods
+which luckily available to me. Since I don't want the same experience haunts
+other people, here's the full story of what happened and what I did to fix it.
+I hope you'll find it useful!</p>
+<h2>The Problem</h2>
+<p>Once upon a time, in a rainy day, I was inspecting my gpg keyring. I just
+wanted to see what kind of file it is in binary. I kind of like randomly
+seeing binary files (I know it's weird) to waste time. It's a great joy
+looking at those unreadable, otherworldly junk text until when I quit (with
+:wq for save-then-quit), vim gave me warning that it cannot sync with the
+filesystem. Wait what? I wasn't even changing the file so what could
+happened? Luckily the file buffer on vim is not closed yet (nice error
+handling vim devs!), and I could copy the entire content of my keyring to
+clipboard. But, where should I put it now? I tried saving into some other
+file in my home folder and it gave the same error. Apparently, I tried to
+create some random with contents and it failed (horribly so!). So I recall
 that these kind of weird errors usually born from some kernel component and
-look what I've got in system log:</p>
+look what I've got in my system log:</p>
 <div class="highlight"><pre><span></span>Feb 01 03:08:01 Tyria kernel: BTRFS error (device dm-1): bdev
 /dev/mapper/Arch-home errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
 Feb 01 03:08:01 Tyria kernel: attempt to access beyond end of device
@@ -106,27 +115,33 @@ of aborted transaction.
 </pre></div>
 
 
-<p>I DO know that BTRFS is still experimental, and I kind of embrace the errors
-that may come to me. But... I didn't expect the kind of error where the
-filesystem tried to access beyond bounds.  Ok, what happened is happened,
-but for now I need to somehow save my keyring first and looking at the error
-message I kind of guess it just happened on my /dev/Arch/home device, I
-might try saving it on /dev/Arch/root and voila! it works! Good now I can go
-on to debugging and fixing my filesystem.</p>
+<p>I <strong>DO</strong> know that BTRFS is still experimental, and I kind of embraced the
+errors that may come to me. But... I didn't expect the kind of error where
+the filesystem tried to access beyond bounds.  Ok, what happened is
+happened, but for now I need to somehow save my keyring first. Looking at
+the error message I kind of guess it just happened on my /dev/Arch/home
+device, so I might try saving it on /dev/Arch/root and voila! It works! Good
+now I can go on to diagnose and fixing my filesystem.</p>
+<h2>Diagnosing &amp; Fixing</h2>
 <p>Actually, the first time I read the error, I don't even understand why it
 attempt to access something beyond the end of device. It doesn't even make
 sense, and I thought it tried to allocate new blocks somewhere outside the
-device (which still doesn't make sense, because if the fs is full it should
-give an error instead of attempting to write). I don't know what caused
-BTRFS to act like that and just plain search it on the web which solutions
-varies and after reading the problems again, they're differ too. Apparently,
-this error message is given for various problem.</p>
+device (which still doesn't make sense, because if the filesystem is full it
+should give an error instead of attempting to write). I don't know what
+caused BTRFS to act like that and just plain search it on the web which
+solutions varies and after reading the problems again, they're differ too.
+Apparently, this error message is given by the kernel for various filesystem
+problems.</p>
 <p>Since there's no specific problem related to the error message, I just tried
-the basic <code>btrfs scrub start &lt;path&gt;</code> to find something. But then it was
-aborted in, like, 5 seconds and only scrubbed 54 MiB of space. Of course my
-filesystem is waaay more than that. And doing that gives new but same errors
-as before. So I guess what happened is when it's trying to scrub, there's
-some file that is out of bound and boom, there goes the errors.</p>
+the basic <code>btrfs scrub start &lt;path&gt;</code> to find some leads. Scrubbing works by
+checking device's blocks and metadata checksum and then compare it with the
+one in the filesystem table, you got some errors if it differs. So, if
+there's something wrong I should be able to notice.  But then it was aborted
+in, like, 5 seconds right after I run it and only scrubbed 54 <strong>MiB</strong> of
+space. Of course my filesystem is waaay more than that. And scrubbing also
+gives new but same errors as before. So I guess what happened is when it's
+trying to scrub, there's some file that is out of bound and boom, there goes
+the errors.</p>
 <p>So now, how do I access them then? Luckily, I've got a nice logical volume
 (LV) layout like this:</p>
 <div class="highlight"><pre><span></span>start ---------------------------------------- end
@@ -138,16 +153,15 @@ some file that is out of bound and boom, there goes the errors.</p>
 
 <p>Thus, my plan is remove the <code>swap</code> LV, extend the <code>home</code> LV, somehow gather
 all the files' bits into the start of the LV, then shrink the <code>home</code> back,
-and recreate the swap.</p>
-<p>Okay, here we go! First of all, remove the <code>swap</code> LV and extend the <code>home</code>
-LV:</p>
+and recreate the swap. Okay, here we go! First of all, remove the <code>swap</code> LV
+and extend the <code>home</code> LV:</p>
 <div class="highlight"><pre><span></span># swapoff /dev/swap
 # lvremove /dev/swap
 # lvextend -l +100%FREE /dev/home
 </pre></div>
 
 
-<p>The layout become like this:</p>
+<p>And the layout become like this:</p>
 <div class="highlight"><pre><span></span>start ---------------------------------------- end
       |    root    |           home          |
                                  ^
@@ -160,12 +174,12 @@ fine. Since I'm not patient, I run <code>watch btrfs scrub status /dev/home</cod
 can monitor it. 10 Gigs, 30 Gigs, 50 Gigs, ..., and some minutes later it's
 done! Nice, so the files are really goes beyond the end <code>/dev/home</code> LV and
 we can try to gather the files. How do we do that? Fortunately, BTRFS
-provides an online defragment tool with <code>btrfs filesystem defragment
+provides an on-line defragment tool with <code>btrfs filesystem defragment
 &lt;partition&gt;</code>. At this point, I'm not really sure how BTRFS defragment works.
 Usually it works like this:</p>
 <p><img alt="defragment illustration" src="https://upload.wikimedia.org/wikipedia/commons/d/d0/FragmentationDefragmentation.gif" title="Defragment Illustration"></p>
 <p>It's usually implementation dependent, but nothing to lose right? (unless
-the defragment feature is still experimental and then all my data lose
+the defragment feature is still experimental and I'll lose all my date
 T_T). So I ran <code>btrfs filesystem defragment /dev/home</code>, and then wait till
 it's done. How to check if it DOES worked? I don't know. Let's just try
 return the LVs like before and then run BTRFS scrub:</p>
@@ -178,13 +192,27 @@ return the LVs like before and then run BTRFS scrub:</p>
 </pre></div>
 
 
-<p>After a moment, it says all the filesystem is checked and no errors. Yay! It
-does worked afterall. It sure is scary when my keyring almost gone, but it's
+<p>After a moment, it says all the filesystem is checked and no errors on
+systemd-journald and I can write things again. Yay! It does worked afterall.</p>
+<hr>
+<p>It sure is scary when my keyring almost gone, but it's
 fun trying to fix the problem (although I don't know if this is truly a fix
 or not). With that said, I think I can fix this because I'm lucky that right
 after my <code>/dev/home</code> LV is my swap LV so I can remove it. I wonder what
 should I do if it's not a swap LV (like, if the <code>/dev/root</code> trying to access
 <code>/dev/home</code>)?</p>
+<p>There are two things that I learn from this incident:
+- Don't straight restart your machine if something failed on your computer.
+  Make sure you don't have any loss first before going for the
+  restart-route. Besides your own data, save the error logs that you got for
+  future diagnose purpose (in case the error is not saved). You can always use
+  pen and paper if you can't save it digitally.
+- Actually, try not to use the restart-route if possible, especially if you
+  use the computer quite often. It's just running from the problem.
+  Restart-route will solve transient problems, and most likely it will
+  happened again. Of course I can say this because I got the basic idea of
+  how it works, but then again, you should have a friend (you do right?)
+  that understand what happened. You're not living alone.</p>
   </div><!-- /.entry-content -->
 </section>
             <hr/>
