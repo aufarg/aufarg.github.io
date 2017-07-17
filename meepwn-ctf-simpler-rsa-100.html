@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Core Dumps</title>
+        <!-- Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=The+Girl+Next+Door' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Marcellus' rel='stylesheet' type='text/css'>
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.css" type="text/css" />
+        <meta charset="utf-8" />
+      
+
+        <!-- Javascript-->
+        <script async src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+        <script async type="text/javascript"> 
+        $(function() {
+            function invisibleMenu() {
+                var now = 0;
+                var pixels = 300;
+                var opacity = -1;
+
+                var move = function() {
+                    now = $(window).scrollTop();
+                    if (now > pixels && opacity !== 0)
+                        opacity = 0;
+                    else if (now < pixels){
+                        // Depends on the position not if scrolls down or up
+                        opacity = (1 - now/pixels);
+                    }
+                    $("div.navigation").css({"opacity": opacity});
+                }
+                $(window).scroll(move);
+                move();
+            }
+            invisibleMenu();
+          });
+          </script> 
+</head>
+
+<body id="index" class="home">
+     <div class="navigation">
+        <ol class="nav">
+          <li class="current"><a href="https://aufarg.github.io">Blog</a> </li>
+          <li><a href="https://aufarg.github.io/archives.html">Archive</a></li>
+          <li><a href="https://aufarg.github.io/tags.html">Tags</a> </li>
+          <li><a href="">RSS</a> </li>
+        </ol>
+      </div>
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">Core Dumps <strong></strong></a></div>
+        </header><!-- /#banner -->
+        <nav id="menu"><ul>
+        </ul></nav><!-- /#menu -->
+        <div class="box">
+<section id="content" class="body">
+  <header class="post">
+    <h1 class="entry-title">
+      MeePwn CTF: Simpler RSA (100)
+    </h1>
+  </header>
+  <footer class="post-info">
+    <abbr>
+      Tue 18 July 2017 
+         By <a class="url fn" href="https://aufarg.github.io/author/aufarg.html">aufarg</a>
+  
+    </abbr>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
+which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
+<code>simpe.py</code>.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="c1"># from flag import FLAG</span>
+
+<span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">getPrime</span><span class="p">(</span><span class="n">nbits</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">getPrime</span><span class="p">(</span><span class="n">nbits</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">p</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">FLAG</span><span class="p">]</span>
+<span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">generate</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;pubkey.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;{0}:{1}:{2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="n">encrypt</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">mi</span> <span class="ow">in</span> <span class="n">m</span><span class="p">]</span>
+<span class="nb">open</span><span class="p">(</span><span class="s2">&quot;enc.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+
+
+<p>From this code, we can see that the value of <code>n</code> will be about 270 bits, which is quite small to
+be factorized. Let's try factorize <code>n</code>.</p>
+<p>The best factorization algorithm that I know of is <a href="https://en.wikipedia.org/wiki/Quadratic_sieve">quadratic
+sieve</a>, which could apparently will factorize 270
+bits integer quite fast. Looking for good implementation quadratic sieve, I came across
+<a href="https://github.com/radii/msieve">msieve</a>. The README says it is appropriate for integers with
+less than 100 digits. Running msieve yield <code>p = 1057817919251064684989791981</code> and <code>q =
+1103935256393984899021164397</code>.</p>
+<p>To decrypt each number in <code>c</code>, we need find <code>m</code> which is passed to <code>encrypt</code> function. Since <code>m</code>
+will be in <code>[1-255]</code>, this can be done by brute-forcing <code>m</code> and then validate if it is the right
+byte. But, how can we validate <code>m</code>?</p>
+<p>Doing <code>pow(x,1,n)</code> basically means <code>x % n</code>, so we have two terms for the encryption, <code>pow(g, m,
+n)</code> and <code>pow(h, r, n)</code>. We can cancel out <code>pow(g, m, n)</code> by multiplying <code>c</code> with inverse modulo
+<code>g^m</code> for modulo <code>n</code>. This leave us with <code>pow(h, r, n)</code>. At initialization, <code>h = pow(g, n, n)</code>
+means <code>pow(h, r, n)</code> is the same as <code>pow(g, n*r, n)</code>. Now, to cancel this term, we need to
+multiply it with inverse modulo of <code>g^(n*r)</code>. But the <code>r</code> is chosen randomly when encrypting, so
+we don't know the value of <code>g^(n*r)</code>.</p>
+<p>To cancel <code>g^(n*r)</code>, we don't need to find the inverse modulo, we can instead find <code>x</code> such that
+<code>g^(x*n*r) % n == 1</code>. From <a href="https://en.wikipedia.org/wiki/Euler's_theorem">Euler's theorem</a>, we
+know that if <code>(x*n*r) % totient(n) == 0</code>, then <code>g^(x*n*r) == 1</code>. Thus, <code>x</code> is
+<code>totient(n)/gcd(totient(n), n)</code>. If we pick the wrong <code>m</code> (let's say guessed m is <code>guessed_m</code>
+and the actual m is <code>actual_m</code>), this leave the term <code>g^(guessed_m - actual_m)</code> which will not
+be equal to zero.</p>
+<p>Here's the Python script to decrypt the ciphers:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="c1"># public keys</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1235280093599323856390922798440377476467763531842392869674688408727824382702235317</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mi">1110549711091392805024587195974719739929628997819528005374351081843256209971586072</span>
+<span class="n">h</span> <span class="o">=</span> <span class="mi">610466084395822279908554174354632326166097007218620288020807622478449585661028278</span>
+<span class="k">assert</span> <span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="n">h</span><span class="p">)</span>
+
+<span class="c1"># primes of n</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">1057817919251064684989791981</span>
+<span class="n">q</span> <span class="o">=</span> <span class="mi">1103935256393984899021164397</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="n">p</span><span class="o">*</span><span class="n">q</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="n">a</span>
+    <span class="k">return</span> <span class="n">gcd</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="n">totient</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">gcd</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cf</span> <span class="o">=</span> <span class="n">gcd</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">totient</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">totient</span><span class="o">/</span><span class="n">cf</span>
+
+<span class="k">def</span> <span class="nf">invmod</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">pow</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">totient</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">200</span><span class="p">):</span>
+    <span class="k">assert</span><span class="p">(</span> <span class="n">gcd</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span>
+    <span class="k">assert</span><span class="p">(</span> <span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">invmod</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span>
+
+<span class="n">cipher</span> <span class="o">=</span> <span class="p">[</span><span class="il">1042684026433440609442082085056733059350277230855631475910449335289565957026925888L</span><span class="p">,</span> <span class="il">337451979363258259789969117391527857381178461709773977486124377788140579446959643L</span><span class="p">,</span> <span class="il">955044246855117318302069848746627916980637349888954523552188603828273408620783185L</span><span class="p">,</span> <span class="il">565084528151941455613387670829541401837686258558304725363697970401158298304784226L</span><span class="p">,</span> <span class="il">1217257199494998716855441753878986048959547533911751395319106679987808998530722005L</span><span class="p">,</span> <span class="il">500431401136979664818320806505265313829298163109190333815615071157569573408761776L</span><span class="p">,</span> <span class="il">918364738570517634370611128928418073524271175997413722821007998543195365584145047L</span><span class="p">,</span> <span class="il">1231818404429995719463458343454764290314747233553619629902141039984717307144020885L</span><span class="p">,</span> <span class="il">578663363706556074852662555903558050626510818844939214634690712022753850484044077L</span><span class="p">,</span> <span class="il">170573141141793020278685561667014942396340687197982787584671361315770701412232820L</span><span class="p">,</span> <span class="il">525046404028002961161648698133126471909762913783905233407759137018767422695415644L</span><span class="p">,</span> <span class="il">548918541683229869313458652944252600295112072416629330975730507209045241266103104L</span><span class="p">,</span> <span class="il">1097888538672145356012505481951969976746432194049237781078685846091302406138295450L</span><span class="p">,</span> <span class="il">467055824810727038529002950991149449402485370247343520114443047715384113252663243L</span><span class="p">,</span> <span class="il">379325228947504950566222318955652420189554769276755237788381017120582088704791796L</span><span class="p">,</span> <span class="il">808135517143354496893964869359259307455178022544381266003759602027195395780858971L</span><span class="p">,</span> <span class="il">232206696206622845104449934990777760916638497611027428059484100417419468488368534L</span><span class="p">,</span> <span class="il">611231502156630905749534239244947175924425232566020566839692916151929122262556160L</span><span class="p">,</span> <span class="il">266317680779170923895607136980535234290396471711461778811550899033797067803838490L</span><span class="p">,</span> <span class="il">458442169696983024890517742499158555610082173984048562536247204694360339657234325L</span><span class="p">,</span> <span class="il">173156860778775111311074302992389403207838028758953619505920477407616091727957249L</span><span class="p">,</span> <span class="il">327701451317276442403593523928518039719286029867533592333080575014882858204660392L</span><span class="p">,</span> <span class="il">1061889651976594791626195662010361995350291121541576461530446716234559629390059206L</span><span class="p">,</span> <span class="il">501107468516571472868902583880130438298825499145194993732906902954639206415408661L</span><span class="p">,</span> <span class="il">793462123972295663612808938124574874398657924694272939619742740367249265250881187L</span><span class="p">,</span> <span class="il">419580729971386599858472445685002497860174205402938481254320715563201540618526181L</span><span class="p">,</span> <span class="il">1095670842511297949652166375966107611580541850315423104099581710112461928501516645L</span><span class="p">,</span> <span class="il">1207404101728741308518114885496775915613418535791624006547396431596035842097919854L</span><span class="p">,</span> <span class="il">63257756791404477719948396035346460877053804738003821615924989712602434088623116L</span><span class="p">,</span> <span class="il">709743404772556668186521811311910146690879578711491970215935941312652194503904278L</span><span class="p">,</span> <span class="il">472145667401895260338686064243470672627707713552548730414485106260542589178719305L</span><span class="p">,</span> <span class="il">671679182553553455773258809387401495029229971280677124071355178172582087439182089L</span><span class="p">,</span> <span class="il">795683594959663064302728712706823881033923895027131034114737749301583410828859935L</span><span class="p">,</span> <span class="il">788511687111620345727088836755516496428115065618134997006646145097528302404655271L</span><span class="p">,</span> <span class="il">493455498376449391174132961453557751413575238351804592824587799692504725075730030L</span><span class="p">,</span> <span class="il">1071336432168555760392522471606603558083343440707490972056560901765084761996537479L</span><span class="p">,</span> <span class="il">76414279730707452882500835328589558586805800097281864786868179845530554318636818L</span><span class="p">,</span> <span class="il">1026789233929477564953495880177610952920067780854127113113934470636602509593246257L</span><span class="p">,</span> <span class="il">1220456099417710433363957577456670914480321272794999438920511570648408214807875401L</span><span class="p">,</span> <span class="il">831001855794529333359541390744984608592774868529241373516540331083225538929223854L</span><span class="p">,</span> <span class="il">406700540669900202178972508513521627652422698239818055618399192500676530118703988L</span><span class="p">,</span> <span class="il">535793870780869641948563592689023912632863260901941937211057060307409713921739965L</span><span class="p">,</span> <span class="il">908165522898293977370960880692560887898587015153655232763363739940417879927826149L</span><span class="p">,</span> <span class="il">916463042698051909403902218425035797085521743060997736870228165259059940402603712L</span><span class="p">,</span> <span class="il">1124064575055728289901493663250187815236366261544380516480084011806758657972869579L</span><span class="p">,</span> <span class="il">302544873761485689612490183241038411927316560916804219683347601892406383914571353L</span><span class="p">,</span> <span class="il">326809752614724517585542018284901481393260541798889339649409227233748588383860516L</span><span class="p">,</span> <span class="il">828292723696438834080952146252731883891295126479141546958923438287859173086057154L</span><span class="p">,</span> <span class="il">835877660712133206131980242990809426528248997858916518574414436451562226433887025L</span><span class="p">,</span> <span class="il">145587585798997332370407645289128453608803108424500991984349925153212212859373727L</span><span class="p">,</span> <span class="il">463948250139563696175107900326108271430940645044009515704115508942300583165355378L</span><span class="p">,</span> <span class="il">944242052057563352409261236875599145504153562928055236566287627433096232314943101L</span><span class="p">,</span> <span class="il">579193856270128178962709647899702648998261560149392089962175236519890756116448359L</span><span class="p">,</span> <span class="il">1167987057311285845643231967769257342900085143163437221731184706561190379437889873L</span><span class="p">]</span>
+
+<span class="n">ans</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cipher</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">256</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">invmod</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ans</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Flag is: <code>MeePwnCTF{well_is_fact0rizati0n_0nly_w4y_to_s0lve_it?}</code></p>
+  </div><!-- /.entry-content -->
+</section>
+            <hr/>
+            <footer id="contentinfo" class="footer">
+                <div>
+                    <a href="https://aufarg.github.io">aufarg</a> (2012)
+                </div>
+                <div>
+                    This work is licensed under <a rel="license" href="http://opensource.org/licenses/bsd-3-clause">3 clause BSD</a>. Source code available on <a rel="source code" href="https://github.com/slok/blog">Github</a>
+                </div>
+                <div>
+                    powered by <a href="http://getpelican.com/">Pelican</a>
+                    and <a href="http://python.org">Python</a>. 
+                    <a href="http://github.com/slok/iris">Theme</a> by <a href="http://xlarrakoetxea.org">Xabier Larrakoetxea</a> based on <a href="http://flask.pocoo.org/">Flask</a> theme
+                </div>
+                <div>
+                    Social icons (font awesome) by <a href="http://fortawesome.github.com/Font-Awesome/"> fort awesome</a>.
+                    <a href="http://www.google.com/webfonts/specimen/The+Girl+Next+Door">Title</a>, <a href="http://www.google.com/webfonts/specimen/Marcellus">headers</a> and <a href="http://www.google.com/webfonts/specimen/Inconsolata">source code</a> fonts by google fonts
+                </div>
+                <div class="social">
+                        <a href="#"><i class="icon-You can add links in your config file"></i>  </a>
+                        <a href="#"><i class="icon-Another social link"></i>  </a>
+                </div>
+            </footer><!-- /#contentinfo -->
+        </div>
+        <!--Add statistycs-->
+
+</body>
+</html>

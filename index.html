@@ -65,6 +65,71 @@
             <article class="archive">
                 <header> 
                     <h1 class="archive-entry-title">
+                        <a href="https://aufarg.github.io/meepwn-ctf-t-100.html" rel="bookmark" title="Permalink to MeePwn CTF: |\/|/-\T|-| (100)">MeePwn CTF: |\/|/-\T|-| (100)</a>
+                    </h1> 
+                </header>
+                <footer class="post-info">
+                    <abbr>
+                      Tue 18 July 2017 
+                         By <a class="url fn" href="https://aufarg.github.io/author/aufarg.html">aufarg</a>
+  
+                    </abbr>
+                    <div class="entry-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+<span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
+
+<span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span>
+    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span>
+    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">hack</span>
+<span class="k">print</span> <span class="n">pad</span>
+<span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span>
+<span class="c1">#hack …</span></pre></div>
+                    <a href="https://aufarg.github.io/meepwn-ctf-t-100.html">read more</a></div>
+                </footer><!-- /.post-info -->
+                <!-- /.entry-content -->
+            </article>
+        </li>
+        
+        <li>
+            <article class="archive">
+                <header> 
+                    <h1 class="archive-entry-title">
+                        <a href="https://aufarg.github.io/meepwn-ctf-simpler-rsa-100.html" rel="bookmark" title="Permalink to MeePwn CTF: Simpler RSA (100)">MeePwn CTF: Simpler RSA (100)</a>
+                    </h1> 
+                </header>
+                <footer class="post-info">
+                    <abbr>
+                      Tue 18 July 2017 
+                         By <a class="url fn" href="https://aufarg.github.io/author/aufarg.html">aufarg</a>
+  
+                    </abbr>
+                    <div class="entry-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
+which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
+<code>simpe.py</code>.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="c1"># from flag import FLAG</span>
+
+<span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span>
+        <span class="n">p …</span></pre></div>
+                    <a href="https://aufarg.github.io/meepwn-ctf-simpler-rsa-100.html">read more</a></div>
+                </footer><!-- /.post-info -->
+                <!-- /.entry-content -->
+            </article>
+        </li>
+        
+        <li>
+            <article class="archive">
+                <header> 
+                    <h1 class="archive-entry-title">
                         <a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="bookmark" title="Permalink to BTRFS: Access Beyond End of Device">BTRFS: Access Beyond End of Device</a>
                     </h1> 
                 </header>

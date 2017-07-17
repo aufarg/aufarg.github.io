@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Core Dumps</title>
+        <!-- Fonts -->
+        <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=The+Girl+Next+Door' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Marcellus' rel='stylesheet' type='text/css'>
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.css" type="text/css" />
+        <meta charset="utf-8" />
+      
+
+        <!-- Javascript-->
+        <script async src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+        <script async type="text/javascript"> 
+        $(function() {
+            function invisibleMenu() {
+                var now = 0;
+                var pixels = 300;
+                var opacity = -1;
+
+                var move = function() {
+                    now = $(window).scrollTop();
+                    if (now > pixels && opacity !== 0)
+                        opacity = 0;
+                    else if (now < pixels){
+                        // Depends on the position not if scrolls down or up
+                        opacity = (1 - now/pixels);
+                    }
+                    $("div.navigation").css({"opacity": opacity});
+                }
+                $(window).scroll(move);
+                move();
+            }
+            invisibleMenu();
+          });
+          </script> 
+</head>
+
+<body id="index" class="home">
+     <div class="navigation">
+        <ol class="nav">
+          <li class="current"><a href="https://aufarg.github.io">Blog</a> </li>
+          <li><a href="https://aufarg.github.io/archives.html">Archive</a></li>
+          <li><a href="https://aufarg.github.io/tags.html">Tags</a> </li>
+          <li><a href="">RSS</a> </li>
+        </ol>
+      </div>
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">Core Dumps <strong></strong></a></div>
+        </header><!-- /#banner -->
+        <nav id="menu"><ul>
+        </ul></nav><!-- /#menu -->
+        <div class="box">
+<section id="content" class="body">
+  <header class="post">
+    <h1 class="entry-title">
+      MeePwn CTF: |\/|/-\T|-| (100)
+    </h1>
+  </header>
+  <footer class="post-info">
+    <abbr>
+      Tue 18 July 2017 
+         By <a class="url fn" href="https://aufarg.github.io/author/aufarg.html">aufarg</a>
+  
+    </abbr>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+<span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
+
+<span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span>
+    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span>
+    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">hack</span>
+<span class="k">print</span> <span class="n">pad</span>
+<span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span>
+<span class="c1">#hack = 64364485357060434848865708402537097493512746702748009007197338675</span>
+<span class="c1">#flag_to_submit = &quot;MeePwnCTF{&quot; + flag + &quot;}&quot;</span>
+</pre></div>
+
+
+<p>Looking at the loop, <code>hack</code> will be like <code>abcdx + bcdx + cdx + dx</code>, with <code>x</code> is the value of
+<code>pad</code>. The value of <code>hack</code> is not quite long. Factorizing <code>hack</code> leads to 13 prime factors (11
+distincts prime factors). We can search which one is <code>x</code> by brute-force, and then try to solve
+the remaining equation.</p>
+<p>After dividing <code>hack</code> with <code>x</code>, the remaining value will be in a form like <code>abcd + bcd + cd +
+d</code>. We can find a proper factor of the remaining equation, and then substract it with 1, and the
+remaining value will in a form like <code>abc + bc + c</code>. This means we can recursively do this and it
+will be the correct sequence if we can make it 0 and <code>MD5(flag)</code> is the same as our candidate
+padding.  We will use <a href="https://en.wikipedia.org/wiki/Depth-first_search">DFS</a> to recursively
+find the candidate.</p>
+<p>Here is the Python script to find the value of flag:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
+
+<span class="n">primes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">107</span><span class="p">,</span><span class="mi">487</span><span class="p">,</span><span class="mi">607</span><span class="p">,</span><span class="mi">28429</span><span class="p">,</span><span class="mi">29287</span><span class="p">,</span><span class="mi">420577267963</span><span class="p">,</span><span class="mi">3680317203978923</span><span class="p">,</span><span class="mi">1002528655290265069</span><span class="p">]</span>
+<span class="n">hack</span> <span class="o">=</span> <span class="mi">64364485357060434848865708402537097493512746702748009007197338675</span>
+<span class="n">flen</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">total</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">primes</span><span class="p">:</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">*</span> <span class="n">p</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">hack</span> <span class="o">==</span> <span class="n">total</span><span class="p">)</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)</span>
+<span class="n">cand</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">primes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">120</span> <span class="o">&lt;=</span> <span class="n">q</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">128</span><span class="p">):</span>
+    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span> <span class="o">==</span> <span class="n">h</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+    <span class="k">return</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">return</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="n">vis</span><span class="p">:</span>
+    <span class="k">return</span>
+
+    <span class="n">vis</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">))</span>
+
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">printable</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">%</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">check</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span> <span class="o">//</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">pad</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">hack</span> <span class="o">//</span> <span class="n">pad</span>
+    <span class="n">vis</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">check</span><span class="p">(</span><span class="n">flen</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="p">[],</span> <span class="n">pad</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Flag is: <code>MeePwnCTF{d0y0ul1keM@TH?}</code></p>
+  </div><!-- /.entry-content -->
+</section>
+            <hr/>
+            <footer id="contentinfo" class="footer">
+                <div>
+                    <a href="https://aufarg.github.io">aufarg</a> (2012)
+                </div>
+                <div>
+                    This work is licensed under <a rel="license" href="http://opensource.org/licenses/bsd-3-clause">3 clause BSD</a>. Source code available on <a rel="source code" href="https://github.com/slok/blog">Github</a>
+                </div>
+                <div>
+                    powered by <a href="http://getpelican.com/">Pelican</a>
+                    and <a href="http://python.org">Python</a>. 
+                    <a href="http://github.com/slok/iris">Theme</a> by <a href="http://xlarrakoetxea.org">Xabier Larrakoetxea</a> based on <a href="http://flask.pocoo.org/">Flask</a> theme
+                </div>
+                <div>
+                    Social icons (font awesome) by <a href="http://fortawesome.github.com/Font-Awesome/"> fort awesome</a>.
+                    <a href="http://www.google.com/webfonts/specimen/The+Girl+Next+Door">Title</a>, <a href="http://www.google.com/webfonts/specimen/Marcellus">headers</a> and <a href="http://www.google.com/webfonts/specimen/Inconsolata">source code</a> fonts by google fonts
+                </div>
+                <div class="social">
+                        <a href="#"><i class="icon-You can add links in your config file"></i>  </a>
+                        <a href="#"><i class="icon-Another social link"></i>  </a>
+                </div>
+            </footer><!-- /#contentinfo -->
+        </div>
+        <!--Add statistycs-->
+
+</body>
+</html>
