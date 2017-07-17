@@ -146,4 +146,4 @@ should I do if it's not a swap LV (like, if the &lt;code&gt;/dev/root&lt;/code&g
   Restart-route will solve transient problems, and most likely it will
   happened again. Of course I can say this because I got the basic idea of
   how it works, but then again, you should have a friend (you do right?)
-  that understand what happened. You're not living alone.&lt;/p&gt;</content></entry></feed>
+  that understand what happened. You're not living alone.&lt;/p&gt;</content><category term="btrfs"></category><category term="filesystem"></category></entry></feed>
