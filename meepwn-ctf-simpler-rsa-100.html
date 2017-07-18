@@ -102,10 +102,11 @@ which is the generated public key when encrypting with <code>simple.py</code>. H
 <p>From this code, we can see that the value of <code>n</code> will be about 270 bits, which is quite small to
 be factorized. Let's try factorize <code>n</code>.</p>
 <p>The best factorization algorithm that I know of is <a href="https://en.wikipedia.org/wiki/Quadratic_sieve">quadratic
-sieve</a>, which could apparently will factorize 270
-bits integer quite fast. Looking for good implementation quadratic sieve, I came across
-<a href="https://github.com/radii/msieve">msieve</a>. The README says it is appropriate for integers with
-less than 100 digits. Running msieve yield <code>p = 1057817919251064684989791981</code> and <code>q =
+sieve</a>, which apparently could
+factorize 270 bits integer quite fast. Looking for good implementation
+quadratic sieve, I came across <a href="https://github.com/radii/msieve">msieve</a>. The
+README says it is appropriate for integers with less than 100 digits. Running
+msieve yield <code>p = 1057817919251064684989791981</code> and <code>q =
 1103935256393984899021164397</code>.</p>
 <p>To decrypt each number in <code>c</code>, we need find <code>m</code> which is passed to <code>encrypt</code> function. Since <code>m</code>
 will be in <code>[1-255]</code>, this can be done by brute-forcing <code>m</code> and then validate if it is the right

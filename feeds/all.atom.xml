@@ -140,10 +140,11 @@ which is the generated public key when encrypting with &lt;code&gt;simple.py&lt;
 &lt;p&gt;From this code, we can see that the value of &lt;code&gt;n&lt;/code&gt; will be about 270 bits, which is quite small to
 be factorized. Let's try factorize &lt;code&gt;n&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;The best factorization algorithm that I know of is &lt;a href="https://en.wikipedia.org/wiki/Quadratic_sieve"&gt;quadratic
-sieve&lt;/a&gt;, which could apparently will factorize 270
-bits integer quite fast. Looking for good implementation quadratic sieve, I came across
-&lt;a href="https://github.com/radii/msieve"&gt;msieve&lt;/a&gt;. The README says it is appropriate for integers with
-less than 100 digits. Running msieve yield &lt;code&gt;p = 1057817919251064684989791981&lt;/code&gt; and &lt;code&gt;q =
+sieve&lt;/a&gt;, which apparently could
+factorize 270 bits integer quite fast. Looking for good implementation
+quadratic sieve, I came across &lt;a href="https://github.com/radii/msieve"&gt;msieve&lt;/a&gt;. The
+README says it is appropriate for integers with less than 100 digits. Running
+msieve yield &lt;code&gt;p = 1057817919251064684989791981&lt;/code&gt; and &lt;code&gt;q =
 1103935256393984899021164397&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;To decrypt each number in &lt;code&gt;c&lt;/code&gt;, we need find &lt;code&gt;m&lt;/code&gt; which is passed to &lt;code&gt;encrypt&lt;/code&gt; function. Since &lt;code&gt;m&lt;/code&gt;
 will be in &lt;code&gt;[1-255]&lt;/code&gt;, this can be done by brute-forcing &lt;code&gt;m&lt;/code&gt; and then validate if it is the right
