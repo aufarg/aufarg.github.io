@@ -81,12 +81,14 @@ div.navigation    { float: left; background-color: #f4f4f4;
 /* posts */
 .posts ol,
 .posts ul,
-.posts li         { list-style-type: none; padding: 0; }
-.posts li         { padding-bottom: 30px; }
-.post             { font-size: 50px; }
-.post a           { text-decoration: none; }
-.post-info abbr   { font-size: 15px; color: #555; font-style: italic; }
-article .archive  { margin-top: 10px; margin-bottom: 10px; }
+.posts li           { list-style-type: none; padding: 0; }
+.posts li           { padding-bottom: 30px; }
+.post               { font-size: 50px; }
+.post a             { text-decoration: none; }
+.post-info abbr     { font-size: 15px; color: #555; font-style: italic; }
+.post-share-links   { font-size: 24px; text-align: right; padding: 2px; }
+.post-share-links a { color: #555; }
+article .archive    { margin-top: 10px; margin-bottom: 10px; }
 
 .entry-content    { margin-top: 50px; margin-bottom: 40px;}
 
