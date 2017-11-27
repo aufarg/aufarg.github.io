@@ -67,13 +67,13 @@
 </pre></div>
 
 
-<p>Looking at the loop, <code>hack</code> will be like <code>abcdx + bcdx + cdx + dx</code>, with <code>x</code> is the value of
+<p>Looking at the loop, <code>hack</code> will be like <span class="math">\(abcdx + bcdx + cdx + dx\)</span>, with <span class="math">\(x\)</span> is the value of
 <code>pad</code>. The value of <code>hack</code> is not quite long. Factorizing <code>hack</code> leads to 13 prime factors (11
-distincts prime factors). We can search which one is <code>x</code> by brute-force, and then try to solve
+distincts prime factors). We can search which one is <span class="math">\(x\)</span> by brute-force, and then try to solve
 the remaining equation.</p>
-<p>After dividing <code>hack</code> with <code>x</code>, the remaining value will be in a form like <code>abcd + bcd + cd +
-d</code>. We can find a proper factor of the remaining equation, and then substract it with 1, and the
-remaining value will in a form like <code>abc + bc + c</code>. This means we can recursively do this and it
+<p>After dividing <code>hack</code> with <span class="math">\(x\)</span>, the remaining value will be in a form like <span class="math">\(abcd + bcd + cd +
+d\)</span>. We can find a proper factor of the remaining equation, and then substract it with 1, and the
+remaining value will in a form like <span class="math">\(abc + bc + c\)</span>. This means we can recursively do this and it
 will be the correct sequence if we can make it 0 and <code>MD5(flag)</code> is the same as our candidate
 padding.  We will use <a href="https://en.wikipedia.org/wiki/Depth-first_search">DFS</a> to recursively
 find the candidate.</p>
@@ -130,6 +130,61 @@ find the candidate.</p>
 
 
 <p>Flag is: <code>MeePwnCTF{d0y0ul1keM@TH?}</code></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div><!-- /.entry-content -->
 </section>
             <hr/>

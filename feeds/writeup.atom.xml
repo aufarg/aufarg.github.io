@@ -419,13 +419,13 @@ Yay! Here's the script for getting the flag:&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Looking at the loop, &lt;code&gt;hack&lt;/code&gt; will be like &lt;code&gt;abcdx + bcdx + cdx + dx&lt;/code&gt;, with &lt;code&gt;x&lt;/code&gt; is the value of
+&lt;p&gt;Looking at the loop, &lt;code&gt;hack&lt;/code&gt; will be like &lt;span class="math"&gt;\(abcdx + bcdx + cdx + dx\)&lt;/span&gt;, with &lt;span class="math"&gt;\(x\)&lt;/span&gt; is the value of
 &lt;code&gt;pad&lt;/code&gt;. The value of &lt;code&gt;hack&lt;/code&gt; is not quite long. Factorizing &lt;code&gt;hack&lt;/code&gt; leads to 13 prime factors (11
-distincts prime factors). We can search which one is &lt;code&gt;x&lt;/code&gt; by brute-force, and then try to solve
+distincts prime factors). We can search which one is &lt;span class="math"&gt;\(x\)&lt;/span&gt; by brute-force, and then try to solve
 the remaining equation.&lt;/p&gt;
-&lt;p&gt;After dividing &lt;code&gt;hack&lt;/code&gt; with &lt;code&gt;x&lt;/code&gt;, the remaining value will be in a form like &lt;code&gt;abcd + bcd + cd +
-d&lt;/code&gt;. We can find a proper factor of the remaining equation, and then substract it with 1, and the
-remaining value will in a form like &lt;code&gt;abc + bc + c&lt;/code&gt;. This means we can recursively do this and it
+&lt;p&gt;After dividing &lt;code&gt;hack&lt;/code&gt; with &lt;span class="math"&gt;\(x\)&lt;/span&gt;, the remaining value will be in a form like &lt;span class="math"&gt;\(abcd + bcd + cd +
+d\)&lt;/span&gt;. We can find a proper factor of the remaining equation, and then substract it with 1, and the
+remaining value will in a form like &lt;span class="math"&gt;\(abc + bc + c\)&lt;/span&gt;. This means we can recursively do this and it
 will be the correct sequence if we can make it 0 and &lt;code&gt;MD5(flag)&lt;/code&gt; is the same as our candidate
 padding.  We will use &lt;a href="https://en.wikipedia.org/wiki/Depth-first_search"&gt;DFS&lt;/a&gt; to recursively
 find the candidate.&lt;/p&gt;
@@ -481,4 +481,59 @@ find the candidate.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Flag is: &lt;code&gt;MeePwnCTF{d0y0ul1keM@TH?}&lt;/code&gt;&lt;/p&gt;</content><category term="ctf-writeup"></category><category term="meepwn-ctf"></category></entry></feed>
+&lt;p&gt;Flag is: &lt;code&gt;MeePwnCTF{d0y0ul1keM@TH?}&lt;/code&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="ctf-writeup"></category><category term="meepwn-ctf"></category></entry></feed>

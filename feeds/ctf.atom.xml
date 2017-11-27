@@ -48,18 +48,20 @@ msieve yield &lt;code&gt;p = 1057817919251064684989791981&lt;/code&gt; and &lt;c
 &lt;p&gt;To decrypt each number in &lt;code&gt;c&lt;/code&gt;, we need find &lt;code&gt;m&lt;/code&gt; which is passed to &lt;code&gt;encrypt&lt;/code&gt; function. Since &lt;code&gt;m&lt;/code&gt;
 will be in &lt;code&gt;[1-255]&lt;/code&gt;, this can be done by brute-forcing &lt;code&gt;m&lt;/code&gt; and then validate if it is the right
 byte. But, how can we validate &lt;code&gt;m&lt;/code&gt;?&lt;/p&gt;
-&lt;p&gt;Doing &lt;code&gt;pow(x,1,n)&lt;/code&gt; basically means &lt;code&gt;x % n&lt;/code&gt;, so we have two terms for the encryption, &lt;code&gt;pow(g, m,
-n)&lt;/code&gt; and &lt;code&gt;pow(h, r, n)&lt;/code&gt;. We can cancel out &lt;code&gt;pow(g, m, n)&lt;/code&gt; by multiplying &lt;code&gt;c&lt;/code&gt; with inverse modulo
-&lt;code&gt;g^m&lt;/code&gt; for modulo &lt;code&gt;n&lt;/code&gt;. This leave us with &lt;code&gt;pow(h, r, n)&lt;/code&gt;. At initialization, &lt;code&gt;h = pow(g, n, n)&lt;/code&gt;
-means &lt;code&gt;pow(h, r, n)&lt;/code&gt; is the same as &lt;code&gt;pow(g, n*r, n)&lt;/code&gt;. Now, to cancel this term, we need to
-multiply it with inverse modulo of &lt;code&gt;g^(n*r)&lt;/code&gt;. But the &lt;code&gt;r&lt;/code&gt; is chosen randomly when encrypting, so
-we don't know the value of &lt;code&gt;g^(n*r)&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;To cancel &lt;code&gt;g^(n*r)&lt;/code&gt;, we don't need to find the inverse modulo, we can instead find &lt;code&gt;x&lt;/code&gt; such that
-&lt;code&gt;g^(x*n*r) % n == 1&lt;/code&gt;. From &lt;a href="https://en.wikipedia.org/wiki/Euler's_theorem"&gt;Euler's theorem&lt;/a&gt;, we
-know that if &lt;code&gt;(x*n*r) % totient(n) == 0&lt;/code&gt;, then &lt;code&gt;g^(x*n*r) == 1&lt;/code&gt;. Thus, &lt;code&gt;x&lt;/code&gt; is
-&lt;code&gt;totient(n)/gcd(totient(n), n)&lt;/code&gt;. If we pick the wrong &lt;code&gt;m&lt;/code&gt; (let's say guessed m is &lt;code&gt;guessed_m&lt;/code&gt;
-and the actual m is &lt;code&gt;actual_m&lt;/code&gt;), this leave the term &lt;code&gt;g^(guessed_m - actual_m)&lt;/code&gt; which will not
-be equal to zero.&lt;/p&gt;
+&lt;p&gt;Doing &lt;code&gt;pow(x,1,n)&lt;/code&gt; basically means &lt;span class="math"&gt;\(x \pmod n\)&lt;/span&gt;, so we have two terms for the
+encryption, &lt;code&gt;pow(g, m, n)&lt;/code&gt; and &lt;code&gt;pow(h, r, n)&lt;/code&gt;. We can cancel out &lt;code&gt;pow(g, m, n)&lt;/code&gt;
+by multiplying &lt;code&gt;c&lt;/code&gt; with inverse modulo &lt;span class="math"&gt;\(g^{m} \pmod n\)&lt;/span&gt;. This leave us with
+&lt;code&gt;pow(h, r, n)&lt;/code&gt;. At initialization, &lt;code&gt;h = pow(g, n, n)&lt;/code&gt; means &lt;code&gt;pow(h, r, n)&lt;/code&gt; is
+the same as &lt;code&gt;pow(g, n*r, n)&lt;/code&gt;. Now, to cancel this term, we need to multiply it
+with inverse modulo of &lt;span class="math"&gt;\(g^{nr}\)&lt;/span&gt;. But the &lt;code&gt;r&lt;/code&gt; is chosen randomly when
+encrypting, so we don't know the value of &lt;span class="math"&gt;\(g^{nr}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;To cancel &lt;span class="math"&gt;\(g^{nr}\)&lt;/span&gt;, we don't need to find the inverse modulo, we can instead find &lt;span class="math"&gt;\(x\)&lt;/span&gt; such that
+&lt;span class="math"&gt;\(g^{xnr} \equiv 1 \pmod n\)&lt;/span&gt;. From &lt;a href="https://en.wikipedia.org/wiki/Euler's_theorem"&gt;Euler's
+theorem&lt;/a&gt;, we know that if &lt;span class="math"&gt;\((xnr) \equiv 0
+\pmod{\phi{( n )}}\)&lt;/span&gt;, then &lt;span class="math"&gt;\(g^{xnr} \equiv 1 \pmod n\)&lt;/span&gt;. Thus, &lt;span class="math"&gt;\(x\)&lt;/span&gt; is &lt;span class="math"&gt;\(\phi{( n )}/gcd(\phi{(n)},
+n)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;If we pick the wrong &lt;code&gt;m&lt;/code&gt; (let's say guessed &lt;code&gt;m&lt;/code&gt; is &lt;span class="math"&gt;\(m'\)&lt;/span&gt; and the actual &lt;code&gt;m&lt;/code&gt; is &lt;span class="math"&gt;\(m\)&lt;/span&gt;), this leave
+the term &lt;span class="math"&gt;\(g^{m'-m}\)&lt;/span&gt;, which will not be equal to zero.&lt;/p&gt;
 &lt;p&gt;Here's the Python script to decrypt the ciphers:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;&lt;/span&gt;
@@ -102,4 +104,59 @@ be equal to zero.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Flag is: &lt;code&gt;MeePwnCTF{well_is_fact0rizati0n_0nly_w4y_to_s0lve_it?}&lt;/code&gt;&lt;/p&gt;</content><category term="ctf-writeup"></category><category term="meepwn-ctf"></category></entry></feed>
+&lt;p&gt;Flag is: &lt;code&gt;MeePwnCTF{well_is_fact0rizati0n_0nly_w4y_to_s0lve_it?}&lt;/code&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="ctf-writeup"></category><category term="meepwn-ctf"></category></entry></feed>

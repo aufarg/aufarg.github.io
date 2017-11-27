@@ -86,18 +86,20 @@ msieve yield <code>p = 1057817919251064684989791981</code> and <code>q =
 <p>To decrypt each number in <code>c</code>, we need find <code>m</code> which is passed to <code>encrypt</code> function. Since <code>m</code>
 will be in <code>[1-255]</code>, this can be done by brute-forcing <code>m</code> and then validate if it is the right
 byte. But, how can we validate <code>m</code>?</p>
-<p>Doing <code>pow(x,1,n)</code> basically means <code>x % n</code>, so we have two terms for the encryption, <code>pow(g, m,
-n)</code> and <code>pow(h, r, n)</code>. We can cancel out <code>pow(g, m, n)</code> by multiplying <code>c</code> with inverse modulo
-<code>g^m</code> for modulo <code>n</code>. This leave us with <code>pow(h, r, n)</code>. At initialization, <code>h = pow(g, n, n)</code>
-means <code>pow(h, r, n)</code> is the same as <code>pow(g, n*r, n)</code>. Now, to cancel this term, we need to
-multiply it with inverse modulo of <code>g^(n*r)</code>. But the <code>r</code> is chosen randomly when encrypting, so
-we don't know the value of <code>g^(n*r)</code>.</p>
-<p>To cancel <code>g^(n*r)</code>, we don't need to find the inverse modulo, we can instead find <code>x</code> such that
-<code>g^(x*n*r) % n == 1</code>. From <a href="https://en.wikipedia.org/wiki/Euler's_theorem">Euler's theorem</a>, we
-know that if <code>(x*n*r) % totient(n) == 0</code>, then <code>g^(x*n*r) == 1</code>. Thus, <code>x</code> is
-<code>totient(n)/gcd(totient(n), n)</code>. If we pick the wrong <code>m</code> (let's say guessed m is <code>guessed_m</code>
-and the actual m is <code>actual_m</code>), this leave the term <code>g^(guessed_m - actual_m)</code> which will not
-be equal to zero.</p>
+<p>Doing <code>pow(x,1,n)</code> basically means <span class="math">\(x \pmod n\)</span>, so we have two terms for the
+encryption, <code>pow(g, m, n)</code> and <code>pow(h, r, n)</code>. We can cancel out <code>pow(g, m, n)</code>
+by multiplying <code>c</code> with inverse modulo <span class="math">\(g^{m} \pmod n\)</span>. This leave us with
+<code>pow(h, r, n)</code>. At initialization, <code>h = pow(g, n, n)</code> means <code>pow(h, r, n)</code> is
+the same as <code>pow(g, n*r, n)</code>. Now, to cancel this term, we need to multiply it
+with inverse modulo of <span class="math">\(g^{nr}\)</span>. But the <code>r</code> is chosen randomly when
+encrypting, so we don't know the value of <span class="math">\(g^{nr}\)</span>.</p>
+<p>To cancel <span class="math">\(g^{nr}\)</span>, we don't need to find the inverse modulo, we can instead find <span class="math">\(x\)</span> such that
+<span class="math">\(g^{xnr} \equiv 1 \pmod n\)</span>. From <a href="https://en.wikipedia.org/wiki/Euler's_theorem">Euler's
+theorem</a>, we know that if <span class="math">\((xnr) \equiv 0
+\pmod{\phi{( n )}}\)</span>, then <span class="math">\(g^{xnr} \equiv 1 \pmod n\)</span>. Thus, <span class="math">\(x\)</span> is <span class="math">\(\phi{( n )}/gcd(\phi{(n)},
+n)\)</span>.</p>
+<p>If we pick the wrong <code>m</code> (let's say guessed <code>m</code> is <span class="math">\(m'\)</span> and the actual <code>m</code> is <span class="math">\(m\)</span>), this leave
+the term <span class="math">\(g^{m'-m}\)</span>, which will not be equal to zero.</p>
 <p>Here's the Python script to decrypt the ciphers:</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">random</span></span>
 <span class="code-line"></span>
@@ -141,6 +143,61 @@ be equal to zero.</p>
 
 
 <p>Flag is: <code>MeePwnCTF{well_is_fact0rizati0n_0nly_w4y_to_s0lve_it?}</code></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
   </div><!-- /.entry-content -->
 </section>
             <hr/>
