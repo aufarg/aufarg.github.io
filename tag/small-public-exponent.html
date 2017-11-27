@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>aufarg:/var/log $ _ <small>filesystem</small></title>
+        <title>aufarg:/var/log $ _ <small>small-public-exponent</small></title>
 
         <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
@@ -36,20 +36,25 @@
             <article class="archive">
                 <header>
                     <h1 class="archive-entry-title">
-                        <a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="bookmark" title="Permalink to BTRFS: Access Beyond End of Device">BTRFS: Access Beyond End of Device</a>
+                        <a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="bookmark" title="Permalink to TUCTF 2017: Crypto Clock (300)">TUCTF 2017: Crypto Clock (300)</a>
                     </h1>
                 </header>
                 <footer class="post-info">
                     <abbr>
-                      Fri 03 February 2017
+                      Sun 26 November 2017
                     </abbr>
-                    <div class="entry-summary"> <p>TL;DR: There's a problem in my filesystem and it made my important
-file corrupted.</p>
-<hr>
-<h5><em>What's the scariest thing that happened in your life?</em></h5>
-<p>In this post I want to share one of the scariest thing that happened to me:
-BTRFS filesystem suddenly attempt to access beyond end of device …</p>
-                    <a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html">read more</a></div>
+                    <div class="entry-summary"> <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
+open the file, we find two file was transmitted. The first one is the <code>keys</code> file which contains
+the following:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>{</span>
+<span class="code-line">&quot;n&quot;:142592923782837889588057810280074407737423643916040668869726059762141765501708356840348112967723017380491537652089235085114921790608646587431612689308433796755742900776477504777927984318043841155548537514797656674327871309567995961808817111092091178333559727506289043092271411929507972666960139142195351097141,</span>
+<span class="code-line">&quot;e&quot;: 3</span>
+<span class="code-line">}</span>
+</pre></div>
+
+
+<p>The second one is a python script file …</p>
+                    <a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
                 </footer>
             </article>
         </li>

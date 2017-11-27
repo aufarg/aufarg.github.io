@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>aufarg:/var/log $ _ <small>filesystem</small></title>
+        <title>aufarg:/var/log $ _ <small>out-of-bound</small></title>
 
         <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
@@ -36,20 +36,19 @@
             <article class="archive">
                 <header>
                     <h1 class="archive-entry-title">
-                        <a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="bookmark" title="Permalink to BTRFS: Access Beyond End of Device">BTRFS: Access Beyond End of Device</a>
+                        <a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html" rel="bookmark" title="Permalink to TUCTF 2017: Guestbook (250)">TUCTF 2017: Guestbook (250)</a>
                     </h1>
                 </header>
                 <footer class="post-info">
                     <abbr>
-                      Fri 03 February 2017
+                      Sun 26 November 2017
                     </abbr>
-                    <div class="entry-summary"> <p>TL;DR: There's a problem in my filesystem and it made my important
-file corrupted.</p>
-<hr>
-<h5><em>What's the scariest thing that happened in your life?</em></h5>
-<p>In this post I want to share one of the scariest thing that happened to me:
-BTRFS filesystem suddenly attempt to access beyond end of device …</p>
-                    <a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html">read more</a></div>
+                    <div class="entry-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
+to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16 …</span></span></pre></div>
+                    <a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">read more</a></div>
                 </footer>
             </article>
         </li>
