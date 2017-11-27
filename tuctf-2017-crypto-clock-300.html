@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>aufarg:/var/log $ _</title>
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet"> 
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.css" type="text/css" />
+        <meta charset="utf-8" />
+      
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
+        </header><!-- /#banner -->
+	<div class="navigation">
+		<ol class="nav">
+			<li><a href="https://aufarg.github.io">Index</a> </li>
+			<li><a href="https://aufarg.github.io/archives.html">Archive</a></li>
+			<li><a href="https://aufarg.github.io/tags.html">Tags</a> </li>
+			<li><a href="https://aufarg.github.io/">RSS</a> </li>
+		</ol>
+	</div>
+        <nav id="menu"><ul>
+        </ul></nav><!-- /#menu -->
+        <div class="box">
+<section id="content" class="body">
+  <header class="post">
+    <h1 class="entry-title">
+      TUCTF 2017: Crypto Clock (300)
+    </h1>
+  </header>
+  <footer class="post-info">
+    <abbr>
+      Sun 26 November 2017 
+         By <a class="url fn" href="https://aufarg.github.io/author/aufar-gilbran.html">Aufar Gilbran</a>
+  
+    </abbr>
+  </footer><!-- /.post-info -->
+  <div class="entry-content">
+    <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
+open the file, we find two file was transmitted. The first one is the <code>keys</code> file which contains
+the following:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>{</span>
+<span class="code-line">    &quot;n&quot;:142592923782837889588057810280074407737423643916040668869726059762141765501708356840348112967723017380491537652089235085114921790608646587431612689308433796755742900776477504777927984318043841155548537514797656674327871309567995961808817111092091178333559727506289043092271411929507972666960139142195351097141,</span>
+<span class="code-line">    &quot;e&quot;: 3</span>
+<span class="code-line">}</span>
+</pre></div>
+
+
+<p>The second one is a python script file which contains the following</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">sys</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">json</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">arrow</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">big_1</span><span class="o">=</span><span class="il">44125640252420890531874960299151489144331823129767199713521591380666658119888039423611193245874268914543544757701212460841500066756559202618153643704131510144412854121922874915334989288095965983299150884589072558175944926880089918837606946144787884895502736057098445881755704071137014578861355153558L</span></span>
+<span class="code-line"><span class="n">big_2</span><span class="o">=</span><span class="il">66696868460135246134548422790675846019514082280010222055190431834695902320690870624800896599876321653748703472303898494328735060007496463688173184134683195070014971393479052888965363156438222430598115999221042866547813179681064777805881205219874282594291769479529691352248899548787766385840180279125343043041L</span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;flag&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">flag</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;keys&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">keys</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c1">#now to get some randomness in here!</span></span>
+<span class="code-line"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/dev/urandom&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">rand</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">rand_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rand</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;hex&#39;</span><span class="p">),</span><span class="mi">16</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c1">#now lets use something easier.</span></span>
+<span class="code-line"><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">rand_int</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">offset</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">big_1</span><span class="p">,</span><span class="n">big_2</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">while</span> <span class="bp">True</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="s1">&#39;&#39;&#39;Welcome to the ntp server</span></span>
+<span class="code-line"><span class="s1">What would you like to do?</span></span>
+<span class="code-line"><span class="s1">    1) get current time</span></span>
+<span class="code-line"><span class="s1">    2) enter admin area</span></span>
+<span class="code-line"><span class="s1">    3) exit</span></span>
+<span class="code-line"><span class="s1">:&#39;&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></span>
+<span class="code-line">    <span class="n">response</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span></span>
+<span class="code-line">        <span class="n">time</span> <span class="o">=</span> <span class="n">arrow</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">+</span> <span class="n">offset</span></span>
+<span class="code-line">        <span class="n">enc_time</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">keys</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">],</span><span class="n">keys</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">])</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;HAHAHAHAHAHA, this NTP server has been taken over by hackers!!!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;here is the time encrypted with sweet RSA!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">enc_time</span><span class="p">))</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></span>
+<span class="code-line">    <span class="k">elif</span> <span class="n">response</span> <span class="o">==</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span></span>
+<span class="code-line">        <span class="c1"># lets get even more random!</span></span>
+<span class="code-line">        <span class="n">time</span> <span class="o">=</span> <span class="n">arrow</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">+</span> <span class="n">offset</span></span>
+<span class="code-line">        <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">time</span><span class="p">)</span></span>
+<span class="code-line">        <span class="n">guessing_int</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">999999999999</span><span class="p">)</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;ACCESS IS ONLY FOR TRUE HACKERS!</span></span>
+<span class="code-line"><span class="s1">to prove you are a true hacker, predict the future:&#39;&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line">        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></span>
+<span class="code-line">        <span class="n">response</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line">        <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">guessing_int</span><span class="p">):</span></span>
+<span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;Wow, guess you are a hacker.</span><span class="se">\n</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span></span>
+<span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></span>
+<span class="code-line">            <span class="k">break</span></span>
+<span class="code-line">        <span class="k">else</span><span class="p">:</span></span>
+<span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;I knew you weren&#39;t a hacker&#39;&#39;&#39;</span><span class="p">)</span></span>
+<span class="code-line">            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></span>
+<span class="code-line">            <span class="k">break</span></span>
+<span class="code-line">    <span class="k">else</span><span class="p">:</span></span>
+<span class="code-line">        <span class="k">print</span> <span class="s1">&#39;Good by.&#39;</span></span>
+<span class="code-line">        <span class="k">break</span></span>
+</pre></div>
+
+
+<p>It seems that the python script is actually what the service given from the challenge execute
+when we connect to it. Since there's read flag and write flag line, lets try figure this script
+out!</p>
+<p>When we connect to the service, the service compute some random number named offset and then
+give two choices: one is to get the (time+offset) encrypted like RSA with public key, and the
+other is to guess a random number generated with (time+offset) as the seed. The flag is
+printed on the second menu, but we don't know the seed since the offset is basically calculated
+with <code>/dev/urandom</code>. We see that the offset is also used in the first menu, so lets take a look
+at the first menu.</p>
+<p>Let <span class="math">\(msg\)</span> as the value of (time+offset) that we seek. In the first menu, the service encrypt
+<span class="math">\(msg\)</span> and then dump it to us. So we need to decrypt it. Factorizing <code>n</code> with <code>yafu</code> and <code>msieve</code>
+seems not feasible, so finding decryption key will be hard. But, there's a catch with the public
+key. The <code>e</code> that is used for the encryption is <code>3</code>, which is quite small. Since we can also
+request for menu 1 repeatedly, we can get the service to dump consecutive numbers for the
+original number.  Let <span class="math">\(a\)</span>, <span class="math">\(a+1\)</span>, and <span class="math">\(a+2\)</span> be the original messages with <span class="math">\(a = msg\)</span>.
+When encrypted, these messages will be:</p>
+<div class="math">$$ e_1 \equiv a^3 \pmod n $$</div>
+<div class="math">$$ e_2 \equiv a^3+3a^2+3a+1 \pmod n $$</div>
+<div class="math">$$ e_3 \equiv a^3+6a^2+12a+8 \pmod n $$</div>
+<p>with <span class="math">\(e_i\)</span> is the <span class="math">\(i\)</span>-th encrypted message. To solve for <span class="math">\(a\)</span>, let's eliminate all the term
+except for <span class="math">\(a\)</span> with exponent of <span class="math">\(1\)</span>.</p>
+<div class="math">$$ r \equiv (e_3-e_1)-2(e_2-e_1)-6 \equiv 6*a \pmod n $$</div>
+<p>then solving for <span class="math">\(a\)</span>:</p>
+<div class="math">$$a \equiv r*6^{-1} \pmod n$$</div>
+<p>Thus, we got <span class="math">\(a\)</span> or <span class="math">\(msg\)</span>, which is the value that we seek for.</p>
+<p>Once we got <span class="math">\(msg\)</span>, we calculate the offset, then mimic the server algorithm to generate
+the number that we need to guess. After we guessed it right, the service will give us the flag.
+Yay! Here's the script for getting the flag:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">gmpy2</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">arrow</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="sd">&#39;&#39;&#39;</span></span>
+<span class="code-line"><span class="sd">we search three consecutive timestamp so we can use the following formula:</span></span>
+<span class="code-line"><span class="sd">    a_1 = a^3 % n</span></span>
+<span class="code-line"><span class="sd">    a_2 = a^3 + 3a^2 + 3a + 1 % n</span></span>
+<span class="code-line"><span class="sd">    a_3 = a^3 + 6a^2 + 12a + 8 % n</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="sd">    p_2 = 6a^2 + 12a + 8 % n</span></span>
+<span class="code-line"><span class="sd">    p_1 = 3a^2 + 3a + 1 % n</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="sd">    r = 6 * a % n</span></span>
+<span class="code-line"><span class="sd">then, we can solve a = r * 6^(-1) % n, with a as the encrypted message.</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="sd">after we got a, we can calculate offset and mimic how the server generate the number in menu 2.</span></span>
+<span class="code-line"><span class="sd">&#39;&#39;&#39;</span></span>
+<span class="code-line"><span class="k">def</span> <span class="nf">get_clock</span><span class="p">():</span></span>
+<span class="code-line">    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s1">&#39;RSA!</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">n</span> <span class="o">=</span> <span class="mi">142592923782837889588057810280074407737423643916040668869726059762141765501708356840348112967723017380491537652089235085114921790608646587431612689308433796755742900776477504777927984318043841155548537514797656674327871309567995961808817111092091178333559727506289043092271411929507972666960139142195351097141</span></span>
+<span class="code-line"><span class="n">inv</span> <span class="o">=</span> <span class="nb">long</span><span class="p">(</span><span class="n">gmpy2</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span></span>
+<span class="code-line"><span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s1">&#39;cryptoclock.tuctf.com&#39;</span><span class="p">,</span> <span class="mi">1230</span><span class="p">)</span></span>
+<span class="code-line"><span class="c1"># p = remote(&#39;localhost&#39;, 13337)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">interval</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># mind with the ping</span></span>
+<span class="code-line"><span class="k">while</span> <span class="bp">True</span><span class="p">:</span> <span class="c1"># retry if we don&#39;t get three different results</span></span>
+<span class="code-line">    <span class="n">curtime</span> <span class="o">=</span> <span class="n">arrow</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span></span>
+<span class="code-line">    <span class="n">a_1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get_clock</span><span class="p">())</span></span>
+<span class="code-line">    <span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">a_2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get_clock</span><span class="p">())</span></span>
+<span class="code-line">    <span class="n">sleep</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">a_3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get_clock</span><span class="p">())</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="n">a_1</span> <span class="o">!=</span> <span class="n">a_2</span> <span class="ow">and</span> <span class="n">a_1</span> <span class="o">!=</span> <span class="n">a_3</span> <span class="ow">and</span> <span class="n">a_2</span> <span class="o">!=</span> <span class="n">a_3</span><span class="p">:</span></span>
+<span class="code-line">        <span class="k">break</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">a_2</span> <span class="o">-</span> <span class="n">a_1</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span></span>
+<span class="code-line"><span class="n">p_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">a_3</span> <span class="o">-</span> <span class="n">a_1</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span></span>
+<span class="code-line"><span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_2</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">p_1</span><span class="o">-</span><span class="mi">6</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">inv</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span></span>
+<span class="code-line"><span class="n">offset</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">curtime</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">curtime</span> <span class="o">=</span> <span class="n">arrow</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">+</span> <span class="n">offset</span></span>
+<span class="code-line"><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">curtime</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">guessing_int</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">999999999999</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">guessing_int</span><span class="p">))</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span></span>
+</pre></div>
+
+
+<p>Flag is: <code>TUCTF{g00d_th1ng_th3_futur3_i5_r3lated!}</code></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+  </div><!-- /.entry-content -->
+</section>
+            <hr/>
+            <footer id="contentinfo" class="footer">
+                <div>
+                    <a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+                </div>
+                <div>
+                    powered by <a href="http://getpelican.com/">Pelican</a>
+                    and <a href="http://python.org">Python</a>. 
+                    Theme based on <a href="http://github.com/slok/iris">iris</a>
+                </div>
+                <div>
+                    Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+                    <a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+                </div>
+                <div class="social">
+                        <a href="https://github.com/aufarg"><i class="icon-github"></i>  </a>
+                        <a href="#"><i class="icon-Another social link"></i>  </a>
+                        <a href="mailto:aufargilbran@gmail.com"><i class="icon-envelope"></i> </a>
+                </div>
+            </footer><!-- /#contentinfo -->
+        </div>
+        <!--Add statistycs-->
+
+</body>
+</html>

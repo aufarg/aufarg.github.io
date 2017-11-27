@@ -14,8 +14,6 @@
         <meta charset="utf-8" />
       
 
-        <!-- Javascript-->
-        <script async src="https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 </head>
 
 <body id="index" class="home">
@@ -42,6 +40,60 @@
             <article class="archive">
                 <header> 
                     <h1 class="archive-entry-title">
+                        <a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html" rel="bookmark" title="Permalink to TUCTF 2017: Guestbook (250)">TUCTF 2017: Guestbook (250)</a>
+                    </h1> 
+                </header>
+                <footer class="post-info">
+                    <abbr>
+                      Sun 26 November 2017 
+                         By <a class="url fn" href="https://aufarg.github.io/author/aufar-gilbran.html">Aufar Gilbran</a>
+  
+                    </abbr>
+                    <div class="entry-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
+to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16 …</span></span></pre></div>
+                    <a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">read more</a></div>
+                </footer><!-- /.post-info -->
+                <!-- /.entry-content -->
+            </article>
+        </li>
+        
+        <li>
+            <article class="archive">
+                <header> 
+                    <h1 class="archive-entry-title">
+                        <a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="bookmark" title="Permalink to TUCTF 2017: Crypto Clock (300)">TUCTF 2017: Crypto Clock (300)</a>
+                    </h1> 
+                </header>
+                <footer class="post-info">
+                    <abbr>
+                      Sun 26 November 2017 
+                         By <a class="url fn" href="https://aufarg.github.io/author/aufar-gilbran.html">Aufar Gilbran</a>
+  
+                    </abbr>
+                    <div class="entry-summary"> <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
+open the file, we find two file was transmitted. The first one is the <code>keys</code> file which contains
+the following:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>{</span>
+<span class="code-line">    &quot;n&quot;:142592923782837889588057810280074407737423643916040668869726059762141765501708356840348112967723017380491537652089235085114921790608646587431612689308433796755742900776477504777927984318043841155548537514797656674327871309567995961808817111092091178333559727506289043092271411929507972666960139142195351097141,</span>
+<span class="code-line">    &quot;e&quot;: 3</span>
+<span class="code-line">}</span>
+</pre></div>
+
+
+<p>The second one is a python script file …</p>
+                    <a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
+                </footer><!-- /.post-info -->
+                <!-- /.entry-content -->
+            </article>
+        </li>
+        
+        <li>
+            <article class="archive">
+                <header> 
+                    <h1 class="archive-entry-title">
                         <a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html" rel="bookmark" title="Permalink to MeePwn CTF 2017: |\/|/-\T|-| (100)">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>
                     </h1> 
                 </header>
@@ -52,23 +104,23 @@
   
                     </abbr>
                     <div class="entry-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
-
-<span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
-<span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
-
-<span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span>
-    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span>
-    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">hack</span>
-<span class="k">print</span> <span class="n">pad</span>
-<span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span>
-<span class="c1">#hack …</span></pre></div>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span></span>
+<span class="code-line"><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span></span>
+<span class="code-line"><span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span></span>
+<span class="code-line">    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">print</span> <span class="n">hack</span></span>
+<span class="code-line"><span class="k">print</span> <span class="n">pad</span></span>
+<span class="code-line"><span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span></span>
+<span class="code-line"><span class="c1">#hack …</span></span></pre></div>
                     <a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">read more</a></div>
                 </footer><!-- /.post-info -->
                 <!-- /.entry-content -->

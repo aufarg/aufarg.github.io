@@ -14,8 +14,6 @@
         <meta charset="utf-8" />
       
 
-        <!-- Javascript-->
-        <script async src="https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 </head>
 
 <body id="index" class="home">
@@ -48,24 +46,24 @@
   </footer><!-- /.post-info -->
   <div class="entry-content">
     <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
-
-<span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
-<span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span>
-
-<span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span>
-    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span>
-    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">hack</span>
-<span class="k">print</span> <span class="n">pad</span>
-<span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span>
-<span class="c1">#hack = 64364485357060434848865708402537097493512746702748009007197338675</span>
-<span class="c1">#flag_to_submit = &quot;MeePwnCTF{&quot; + flag + &quot;}&quot;</span>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span></span>
+<span class="code-line"><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span></span>
+<span class="code-line"><span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span></span>
+<span class="code-line">    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">print</span> <span class="n">hack</span></span>
+<span class="code-line"><span class="k">print</span> <span class="n">pad</span></span>
+<span class="code-line"><span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span></span>
+<span class="code-line"><span class="c1">#hack = 64364485357060434848865708402537097493512746702748009007197338675</span></span>
+<span class="code-line"><span class="c1">#flag_to_submit = &quot;MeePwnCTF{&quot; + flag + &quot;}&quot;</span></span>
 </pre></div>
 
 
@@ -80,54 +78,54 @@ will be the correct sequence if we can make it 0 and <code>MD5(flag)</code> is t
 padding.  We will use <a href="https://en.wikipedia.org/wiki/Depth-first_search">DFS</a> to recursively
 find the candidate.</p>
 <p>Here is the Python script to find the value of flag:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">string</span>
-<span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
-
-<span class="n">primes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">107</span><span class="p">,</span><span class="mi">487</span><span class="p">,</span><span class="mi">607</span><span class="p">,</span><span class="mi">28429</span><span class="p">,</span><span class="mi">29287</span><span class="p">,</span><span class="mi">420577267963</span><span class="p">,</span><span class="mi">3680317203978923</span><span class="p">,</span><span class="mi">1002528655290265069</span><span class="p">]</span>
-<span class="n">hack</span> <span class="o">=</span> <span class="mi">64364485357060434848865708402537097493512746702748009007197338675</span>
-<span class="n">flen</span> <span class="o">=</span> <span class="mi">14</span>
-<span class="n">total</span> <span class="o">=</span> <span class="mi">1</span>
-
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">primes</span><span class="p">:</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">*</span> <span class="n">p</span>
-<span class="k">assert</span><span class="p">(</span><span class="n">hack</span> <span class="o">==</span> <span class="n">total</span><span class="p">)</span>
-
-<span class="n">mask</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)</span>
-<span class="n">cand</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">primes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">120</span> <span class="o">&lt;=</span> <span class="n">q</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">128</span><span class="p">):</span>
-    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span> <span class="o">==</span> <span class="n">h</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
-    <span class="k">return</span>
-    <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="k">return</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="n">vis</span><span class="p">:</span>
-    <span class="k">return</span>
-
-    <span class="n">vis</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">))</span>
-
-
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">printable</span><span class="p">:</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">t</span> <span class="o">%</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">check</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span> <span class="o">//</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">pad</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">hack</span> <span class="o">//</span> <span class="n">pad</span>
-    <span class="n">vis</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="n">check</span><span class="p">(</span><span class="n">flen</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="p">[],</span> <span class="n">pad</span><span class="p">)</span>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">string</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">primes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">107</span><span class="p">,</span><span class="mi">487</span><span class="p">,</span><span class="mi">607</span><span class="p">,</span><span class="mi">28429</span><span class="p">,</span><span class="mi">29287</span><span class="p">,</span><span class="mi">420577267963</span><span class="p">,</span><span class="mi">3680317203978923</span><span class="p">,</span><span class="mi">1002528655290265069</span><span class="p">]</span></span>
+<span class="code-line"><span class="n">hack</span> <span class="o">=</span> <span class="mi">64364485357060434848865708402537097493512746702748009007197338675</span></span>
+<span class="code-line"><span class="n">flen</span> <span class="o">=</span> <span class="mi">14</span></span>
+<span class="code-line"><span class="n">total</span> <span class="o">=</span> <span class="mi">1</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">primes</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">*</span> <span class="n">p</span></span>
+<span class="code-line"><span class="k">assert</span><span class="p">(</span><span class="n">hack</span> <span class="o">==</span> <span class="n">total</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">mask</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)</span></span>
+<span class="code-line"><span class="n">cand</span> <span class="o">=</span> <span class="p">[]</span></span>
+<span class="code-line"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span></span>
+<span class="code-line">    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">primes</span><span class="p">)):</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">((</span><span class="n">i</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span></span>
+<span class="code-line">        <span class="n">q</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">primes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">120</span> <span class="o">&lt;=</span> <span class="n">q</span> <span class="ow">and</span> <span class="n">q</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">128</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">cand</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span> <span class="o">==</span> <span class="n">h</span><span class="p">):</span></span>
+<span class="code-line">        <span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span></span>
+<span class="code-line">    <span class="k">return</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></span>
+<span class="code-line">    <span class="k">return</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="ow">in</span> <span class="n">vis</span><span class="p">:</span></span>
+<span class="code-line">    <span class="k">return</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">vis</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">d</span><span class="p">,</span><span class="n">t</span><span class="p">))</span></span>
+<span class="code-line"></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">printable</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">x</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="n">t</span> <span class="o">%</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span></span>
+<span class="code-line">        <span class="n">check</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span> <span class="o">//</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">for</span> <span class="n">pad</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">t</span> <span class="o">=</span> <span class="n">hack</span> <span class="o">//</span> <span class="n">pad</span></span>
+<span class="code-line">    <span class="n">vis</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></span>
+<span class="code-line">    <span class="n">check</span><span class="p">(</span><span class="n">flen</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="p">[],</span> <span class="n">pad</span><span class="p">)</span></span>
 </pre></div>
 
 
