@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2017-11-28T19:09:53+07:00</updated><entry><title>TUCTF 2017: Crypto Clock (300)</title><link href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="alternate"></link><published>2017-11-27T14:56:51+07:00</published><updated>2017-11-28T19:09:53+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2017-11-27:/tuctf-2017-crypto-clock-300.html</id><summary type="html">&lt;p&gt;We are given a network dump file, &lt;code&gt;network_dump&lt;/code&gt; and a service that we can connect to. After we
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2017-11-28T19:19:34+07:00</updated><entry><title>TUCTF 2017: Crypto Clock (300)</title><link href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="alternate"></link><published>2017-11-27T14:56:51+07:00</published><updated>2017-11-28T19:19:34+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2017-11-27:/tuctf-2017-crypto-clock-300.html</id><summary type="html">&lt;p&gt;We are given a network dump file, &lt;code&gt;network_dump&lt;/code&gt; and a service that we can connect to. After we
 open the file, we find two file was transmitted. The first one is the &lt;code&gt;keys&lt;/code&gt; file which contains
 the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;{&lt;/span&gt;
@@ -101,10 +101,13 @@ at the first menu.&lt;/p&gt;
 &lt;p&gt;Let &lt;span class="math"&gt;\(msg\)&lt;/span&gt; as the value of (time+offset) that we seek. In the first menu, the service encrypt
 &lt;span class="math"&gt;\(msg\)&lt;/span&gt; and then dump it to us. So we need to decrypt it. Factorizing &lt;code&gt;n&lt;/code&gt; with &lt;code&gt;yafu&lt;/code&gt; and &lt;code&gt;msieve&lt;/code&gt;
 seems not feasible, so finding decryption key will be hard. But, there's a catch with the public
-key. The &lt;code&gt;e&lt;/code&gt; that is used for the encryption is &lt;code&gt;3&lt;/code&gt;, which is quite small. Since we can also
-request for menu 1 repeatedly, we can get the service to dump consecutive numbers for the
-original number.  Let &lt;span class="math"&gt;\(a\)&lt;/span&gt;, &lt;span class="math"&gt;\(a+1\)&lt;/span&gt;, and &lt;span class="math"&gt;\(a+2\)&lt;/span&gt; be the original messages with &lt;span class="math"&gt;\(a = msg\)&lt;/span&gt;.
-When encrypted, these messages will be:&lt;/p&gt;
+key. The &lt;code&gt;e&lt;/code&gt; that is used for the encryption is &lt;code&gt;3&lt;/code&gt;, which is quite small. We can also request
+for menu 1 repeatedly, we can get the service to dump consecutive numbers for the original
+number. This means we can kind of pick multiple plaintexts that are pair-wise related and could
+be represented in one variable. The small &lt;code&gt;e&lt;/code&gt; means the representation of the ciphertext is will
+be a low degree polynomial so we can try to solve the system of linear equations by hand.&lt;/p&gt;
+&lt;p&gt;Let &lt;span class="math"&gt;\(a\)&lt;/span&gt;, &lt;span class="math"&gt;\(a+1\)&lt;/span&gt;, and &lt;span class="math"&gt;\(a+2\)&lt;/span&gt; be the original messages with &lt;span class="math"&gt;\(a = msg\)&lt;/span&gt;.  When encrypted, these
+messages will be:&lt;/p&gt;
 &lt;div class="math"&gt;$$ e_1 \equiv a^3 \pmod n $$&lt;/div&gt;
 &lt;div class="math"&gt;$$ e_2 \equiv a^3+3a^2+3a+1 \pmod n $$&lt;/div&gt;
 &lt;div class="math"&gt;$$ e_3 \equiv a^3+6a^2+12a+8 \pmod n $$&lt;/div&gt;
