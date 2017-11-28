@@ -18,32 +18,30 @@
 <body id="index" class="home">
         <header id="banner" class="body">
                 <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
-        </header><!-- /#banner -->
-        <div class="navigation">
-                <ol class="nav">
-                        <li><a href="https://aufarg.github.io/categories.html">categories</a> </li>
-                        <li><a href="https://aufarg.github.io/tags.html">tags</a> </li>
-                        <li><a href="https://aufarg.github.io/archives.html">archive</a></li>
-                </ol>
-        </div>
-        <nav id="menu"><ul>
-        </ul></nav><!-- /#menu -->
-        <div class="box">
+		<nav>
+			<ol class="nav">
+				<li><a href="https://aufarg.github.io/categories.html">categories</a> </li>
+				<li><a href="https://aufarg.github.io/tags.html">tags</a> </li>
+				<li><a href="https://aufarg.github.io/archives.html">archive</a></li>
+			</ol>
+			<ul>
+			</ul>
+		</nav>
+	</header>
+	<div class="box">
 <section id="content">
-<div class="posts">
-    <ol id="post-list">
-        <li>
-            <article class="archive">
-                <header>
-                    <h1 class="archive-entry-title">
-                        <a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="bookmark" title="Permalink to TUCTF 2017: Crypto Clock (300)">TUCTF 2017: Crypto Clock (300)</a>
-                    </h1>
-                </header>
-                <footer class="post-info">
-                    <abbr>
-                      Sun 26 November 2017
-                    </abbr>
-                    <div class="entry-summary"> <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
+	<div class="posts">
+		<ol id="post-list">
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="post-title">
+		TUCTF 2017: Crypto Clock (300)
+	</h1>
+</header>
+<div class="post-info">
+	<abbr>Mon 27 November 2017</abbr>
+</div>					<div class="post-summary"> <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
 open the file, we find two file was transmitted. The first one is the <code>keys</code> file which contains
 the following:</p>
 <div class="highlight"><pre><span class="code-line"><span></span>{</span>
@@ -54,22 +52,56 @@ the following:</p>
 
 
 <p>The second one is a python script file …</p>
-                    <a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
-                </footer>
-            </article>
-        </li>
-        <li>
-            <article class="archive">
-                <header>
-                    <h1 class="archive-entry-title">
-                        <a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html" rel="bookmark" title="Permalink to MeePwn CTF 2017: |\/|/-\T|-| (100)">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>
-                    </h1>
-                </header>
-                <footer class="post-info">
-                    <abbr>
-                      Tue 18 July 2017
-                    </abbr>
-                    <div class="entry-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
+						<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
+<footer>
+	<div class="post-share-links">
+		<a href="https://twitter.com/intent/tweet?text=TUCTF%202017%3A%20Crypto%20Clock%20%28300%29&url=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=TUCTF%202017%3A%20Crypto%20Clock%20%28300%29&amp;body=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+ 				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="post-title">
+		MeePwn CTF 2017: Simpler RSA (100)
+	</h1>
+</header>
+<div class="post-info">
+	<abbr>Tue 18 July 2017</abbr>
+</div>					<div class="post-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
+which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
+<code>simpe.py</code>.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
+<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">p …</span></span></pre></div>
+						<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
+<footer>
+	<div class="post-share-links">
+		<a href="https://twitter.com/intent/tweet?text=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&amp;body=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+ 				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="post-title">
+		MeePwn CTF 2017: |\/|/-\T|-| (100)
+	</h1>
+</header>
+<div class="post-info">
+	<abbr>Tue 18 July 2017</abbr>
+</div>					<div class="post-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
 <span class="code-line"><span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span></span>
 <span class="code-line"></span>
@@ -87,63 +119,45 @@ the following:</p>
 <span class="code-line"><span class="k">print</span> <span class="n">pad</span></span>
 <span class="code-line"><span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span></span>
 <span class="code-line"><span class="c1">#hack …</span></span></pre></div>
-                    <a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">read more</a></div>
-                </footer>
-            </article>
-        </li>
-        <li>
-            <article class="archive">
-                <header>
-                    <h1 class="archive-entry-title">
-                        <a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" rel="bookmark" title="Permalink to MeePwn CTF 2017: Simpler RSA (100)">MeePwn CTF 2017: Simpler RSA (100)</a>
-                    </h1>
-                </header>
-                <footer class="post-info">
-                    <abbr>
-                      Tue 18 July 2017
-                    </abbr>
-                    <div class="entry-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
-which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
-<code>simpe.py</code>.</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
-<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
-<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
-<span class="code-line">    <span class="n">p …</span></span></pre></div>
-                    <a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
-                </footer>
-            </article>
-        </li>
-    </ol>
-</div>
+						<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">read more</a></div>
+<footer>
+	<div class="post-share-links">
+		<a href="https://twitter.com/intent/tweet?text=MeePwn%20CTF%202017%3A%20%7C%5C/%7C/-%5CT%7C-%7C%20%28100%29&url=https%3A//aufarg.github.io/meepwn-ctf-2017-t-100.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/meepwn-ctf-2017-t-100.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/meepwn-ctf-2017-t-100.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=MeePwn%20CTF%202017%3A%20%7C%5C/%7C/-%5CT%7C-%7C%20%28100%29&amp;body=https%3A//aufarg.github.io/meepwn-ctf-2017-t-100.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+ 				</article>
+			</li>
+		</ol>
+	</div>
 <p class="pagination">
             <span class="direction"></span>
     page 1 / 1
 </p>
 </section>
-            <hr/>
-            <footer id="contentinfo" class="footer">
-                <div>
-                    <a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
-                </div>
-                <div>
-                    powered by <a href="http://getpelican.com/">Pelican</a>
-                    and <a href="http://python.org">Python</a>. 
-                    Theme based on <a href="http://github.com/slok/iris">iris</a>
-                </div>
-                <div>
-                    Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
-                    <a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
-                </div>
-                <div class="social">
-                        <a href="https://github.com/aufarg"><i class="fa fa-github-square"></i></a>
-                        <a href="#"><i class="fa fa-Another social link-square"></i></a>
-                        <a href="mailto:aufargilbran@gmail.com"><i class="fa fa-envelope-square"></i></a>
-                </div>
-            </footer><!-- /#contentinfo -->
-        </div>
-        <!--Add statistycs-->
+		<hr/>
+	</div>
+	<footer id="siteinfo" class="footer">
+		<div>
+			<a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+		</div>
+		<div>
+			powered by <a href="http://getpelican.com/">Pelican</a>
+			and <a href="http://python.org">Python</a>. 
+			Theme based on <a href="http://github.com/slok/iris">iris</a>
+		</div>
+		<div>
+			Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+			<a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+		</div>
+		<div class="social">
+			<a href="https://github.com/aufarg"><i class="fa fa-github-square"></i></a>
+			<a href="#"><i class="fa fa-Another social link-square"></i></a>
+			<a href="mailto:aufargilbran@gmail.com"><i class="fa fa-envelope-square"></i></a>
+		</div>
+	</footer>
 
 </body>
 </html>
