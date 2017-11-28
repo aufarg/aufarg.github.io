@@ -128,7 +128,7 @@ printed on the second menu, but we don't know the seed since the offset is basic
 with <code>/dev/urandom</code>. We see that the offset is also used in the first menu, so lets take a look
 at the first menu.</p>
 <p>Let <span class="math">\(msg\)</span> as the value of (time+offset) that we seek. In the first menu, the service encrypt
-<span class="math">\(msg\)</span> and then dump it to us. So we need to decrypt it. Factorizing <code>n</code> with <code>yafu</code> and <code>msieve</code>
+<span class="math">\(msg\)</span> and then dump it to us. So we need to decrypt it. Factoring <code>n</code> with <code>yafu</code> and <code>msieve</code>
 seems not feasible, so finding decryption key will be hard. But, there's a catch with the public
 key. The <code>e</code> that is used for the encryption is <code>3</code>, which is quite small. We can also request
 for menu 1 repeatedly, we can get the service to dump consecutive numbers for the original
@@ -278,7 +278,13 @@ Yay! Here's the script for getting the flag:</p>
 		<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">TUCTF 2017: Guestbook (250)</a>
 	</div>
 	<div class="post-summary">
+		<a href="https://aufarg.github.io/cyber-sea-game-2017-rsa-8192-200.html">Cyber Sea Game 2017: rsa-8192 (200)</a>
+	</div>
+	<div class="post-summary">
 		<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">MeePwn CTF 2017: Simpler RSA (100)</a>
+	</div>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/cyber-sea-game-2017-addcrypto-50.html">Cyber Sea Game 2017: addcrypto (50)</a>
 	</div>
 	<div class="post-summary">
 		<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>

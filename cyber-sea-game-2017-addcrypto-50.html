@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>aufarg:/var/log $ _</title>
+
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet"> 
+
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.min.css" type="text/css" />
+        <meta charset="utf-8" />
+
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
+		<nav>
+			<ol class="nav">
+				<li><a href="https://aufarg.github.io/categories.html">categories</a> </li>
+				<li><a href="https://aufarg.github.io/tags.html">tags</a> </li>
+				<li><a href="https://aufarg.github.io/archives.html">archive</a></li>
+			</ol>
+			<ul>
+			</ul>
+		</nav>
+	</header>
+	<div class="box">
+<section id="content" class="body">
+	<article class="post-content">
+<header class="post">
+	<h1 class="post-title">
+		Cyber Sea Game 2017: addcrypto (50)
+	</h1>
+</header>
+<div class="post-info">
+	<abbr>Tue 28 November 2017</abbr> &#183;
+< 1 min read</div>		<p>We are given a file, <code>encrypt.py</code>, which looks as follows.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">os</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">flag</span> <span class="kn">import</span> <span class="n">flag</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">message</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">flag</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">cipher</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></span>
+<span class="code-line"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">cipher</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">((</span><span class="nb">ord</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="nb">ord</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="nb">ord</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">print</span> <span class="n">cipher</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;hex&#39;</span><span class="p">)</span></span>
+<span class="code-line"><span class="c1"># 4c8f7236c7b259b4e9b792929f2d59534437394530392a2547645958522d3d3b4e3e412c2f2a47314b604d483849342534413e516673</span></span>
+</pre></div>
+
+
+<p>Each byte of the cipher is in form <span class="math">\((a+2*b) \mod 256\)</span>. Since finding <span class="math">\(a\)</span>, won't help us at this
+point because <span class="math">\(b\)</span> will have two solutions, let's try find <span class="math">\(a\)</span> instead. The problem states that
+the cipher already include the CS2017{<flag>} format, so we can find <span class="math">\(b\)</span> for each byte by
+deciphering from the back. We assume the first character that we decipher (i.e. the last
+character of the cipher) is character <code>}</code>. Then, we can calculate <span class="math">\(a\)</span>, which will be the next
+<span class="math">\(b\)</span> for the next character.</p>
+<p>Here is the Python script to find the value of flag:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">string</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">cipher</span> <span class="o">=</span> <span class="s1">&#39;4c8f7236c7b259b4e9b792929f2d59534437394530392a2547645958522d3d3b4e3e412c2f2a47314b604d483849342534413e516673&#39;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;hex&#39;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></span>
+<span class="code-line"><span class="n">flag</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;}&#39;</span><span class="p">]</span></span>
+<span class="code-line"><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cipher</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">cur</span> <span class="o">=</span> <span class="n">flag</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></span>
+<span class="code-line">    <span class="n">flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">ord</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">))</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flag</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span></span>
+</pre></div>
+
+
+<p>Flag is: <code>CS2017{original_crypto_often_has_vulnerability}</code></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+<footer>
+	<div class="post-share-links">
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/cyber-sea-game-2017-addcrypto-50.html" target="_blank" title="Share on Facebook"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="https://twitter.com/intent/tweet?text=Cyber%20Sea%20Game%202017%3A%20addcrypto%20%2850%29&url=https%3A//aufarg.github.io/cyber-sea-game-2017-addcrypto-50.html" target="_blank" title="Share on Twitter"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/cyber-sea-game-2017-addcrypto-50.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=Cyber%20Sea%20Game%202017%3A%20addcrypto%20%2850%29&amp;body=https%3A//aufarg.github.io/cyber-sea-game-2017-addcrypto-50.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+<div class="post-related">
+	<h3>Related Posts</h3>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/cyber-sea-game-2017-rsa-8192-200.html">Cyber Sea Game 2017: rsa-8192 (200)</a>
+	</div>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>
+	</div>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">TUCTF 2017: Crypto Clock (300)</a>
+	</div>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">MeePwn CTF 2017: Simpler RSA (100)</a>
+	</div>
+</div>	</article>
+</section>
+		<hr/>
+	</div>
+	<footer id="siteinfo" class="footer">
+		<div>
+			<a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+		</div>
+		<div>
+			powered by <a href="http://getpelican.com/">Pelican</a>
+			and <a href="http://python.org">Python</a>. 
+			Theme based on <a href="http://github.com/slok/iris">iris</a>
+		</div>
+		<div>
+			Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+			<a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+		</div>
+		<div class="social">
+			<a href="https://github.com/aufarg"><i class="fa fa-github-square"></i></a>
+			<a href="#"><i class="fa fa-Another social link-square"></i></a>
+			<a href="mailto:aufargilbran@gmail.com"><i class="fa fa-envelope-square"></i></a>
+		</div>
+	</footer>
+
+</body>
+</html>
