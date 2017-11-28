@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>aufarg:/var/log $ _</title>
+        <title>aufarg:/var/log $ _ <small>troubleshooting</small></title>
 
         <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
@@ -36,27 +36,24 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="post-title">
-		MeePwn CTF 2017: Simpler RSA (100)
+		BTRFS: Access Beyond End of Device
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Tue 18 July 2017</abbr>
-</div>					<div class="post-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
-which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
-<code>simpe.py</code>.</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
-<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
-<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
-<span class="code-line">    <span class="n">p …</span></span></pre></div>
-						<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
+	<abbr>Fri 03 February 2017</abbr>
+</div>					<div class="post-summary"> <p>TL;DR: There's a problem in my filesystem and it made my important
+file corrupted.</p>
+<hr>
+<h5><em>What's the scariest thing that happened in your life?</em></h5>
+<p>In this post I want to share one of the scariest thing that happened to me:
+BTRFS filesystem suddenly attempt to access beyond end of device …</p>
+						<a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html">read more</a></div>
 <footer>
 	<div class="post-share-links">
-		<a href="https://twitter.com/intent/tweet?text=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
-		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
-		<a href="mailto:?subject=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&amp;body=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+		<a href="https://twitter.com/intent/tweet?text=BTRFS%3A%20Access%20Beyond%20End%20of%20Device&url=https%3A//aufarg.github.io/btrfs-access-beyond-end-of-device.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/btrfs-access-beyond-end-of-device.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/btrfs-access-beyond-end-of-device.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=BTRFS%3A%20Access%20Beyond%20End%20of%20Device&amp;body=https%3A//aufarg.github.io/btrfs-access-beyond-end-of-device.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
 	</div>
 </footer>
  				</article>
@@ -68,7 +65,6 @@ which is the generated public key when encrypting with <code>simple.py</code>. H
     page 1 / 1
 </p>
 </section>
-
 		<hr/>
 	</div>
 	<footer id="siteinfo" class="footer">
