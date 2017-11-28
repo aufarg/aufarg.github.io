@@ -36,11 +36,42 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="archive-post-title">
+		<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="bookmark" title="permalink to TUCTF 2017: Crypto Clock (300)">TUCTF 2017: Crypto Clock (300)</a>
+	</h1>
+</header>
+<div class="post-info">
+	<abbr>Mon 27 November 2017</abbr>
+</div>					<div class="post-summary"> <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
+open the file, we find two file was transmitted. The first one is the <code>keys</code> file which contains
+the following:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>{</span>
+<span class="code-line">&quot;n&quot;:142592923782837889588057810280074407737423643916040668869726059762141765501708356840348112967723017380491537652089235085114921790608646587431612689308433796755742900776477504777927984318043841155548537514797656674327871309567995961808817111092091178333559727506289043092271411929507972666960139142195351097141,</span>
+<span class="code-line">&quot;e&quot;: 3</span>
+<span class="code-line">}</span>
+</pre></div>
+
+
+<p>The second one is a python script file …</p>
+						<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
+<footer>
+	<div class="post-share-links">
+		<a href="https://twitter.com/intent/tweet?text=TUCTF%202017%3A%20Crypto%20Clock%20%28300%29&url=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=TUCTF%202017%3A%20Crypto%20Clock%20%28300%29&amp;body=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+ 				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="archive-post-title">
 		<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html" rel="bookmark" title="permalink to TUCTF 2017: Guestbook (250)">TUCTF 2017: Guestbook (250)</a>
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Sun 26 November 2017</abbr>
+	<abbr>Mon 27 November 2017</abbr>
 </div>					<div class="post-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
 to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
@@ -61,29 +92,27 @@ to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA w
 				<article class="archive">
 <header class="post">
 	<h1 class="archive-post-title">
-		<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html" rel="bookmark" title="permalink to TUCTF 2017: Crypto Clock (300)">TUCTF 2017: Crypto Clock (300)</a>
+		<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" rel="bookmark" title="permalink to MeePwn CTF 2017: Simpler RSA (100)">MeePwn CTF 2017: Simpler RSA (100)</a>
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Sun 26 November 2017</abbr>
-</div>					<div class="post-summary"> <p>We are given a network dump file, <code>network_dump</code> and a service that we can connect to. After we
-open the file, we find two file was transmitted. The first one is the <code>keys</code> file which contains
-the following:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>{</span>
-<span class="code-line">&quot;n&quot;:142592923782837889588057810280074407737423643916040668869726059762141765501708356840348112967723017380491537652089235085114921790608646587431612689308433796755742900776477504777927984318043841155548537514797656674327871309567995961808817111092091178333559727506289043092271411929507972666960139142195351097141,</span>
-<span class="code-line">&quot;e&quot;: 3</span>
-<span class="code-line">}</span>
-</pre></div>
-
-
-<p>The second one is a python script file …</p>
-						<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
+	<abbr>Tue 18 July 2017</abbr>
+</div>					<div class="post-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
+which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
+<code>simpe.py</code>.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
+<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">p …</span></span></pre></div>
+						<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
 <footer>
 	<div class="post-share-links">
-		<a href="https://twitter.com/intent/tweet?text=TUCTF%202017%3A%20Crypto%20Clock%20%28300%29&url=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
-		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
-		<a href="mailto:?subject=TUCTF%202017%3A%20Crypto%20Clock%20%28300%29&amp;body=https%3A//aufarg.github.io/tuctf-2017-crypto-clock-300.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+		<a href="https://twitter.com/intent/tweet?text=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&amp;body=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
 	</div>
 </footer>
  				</article>
@@ -130,40 +159,11 @@ the following:</p>
 				<article class="archive">
 <header class="post">
 	<h1 class="archive-post-title">
-		<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" rel="bookmark" title="permalink to MeePwn CTF 2017: Simpler RSA (100)">MeePwn CTF 2017: Simpler RSA (100)</a>
-	</h1>
-</header>
-<div class="post-info">
-	<abbr>Tue 18 July 2017</abbr>
-</div>					<div class="post-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
-which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
-<code>simpe.py</code>.</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
-<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
-<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
-<span class="code-line">    <span class="n">p …</span></span></pre></div>
-						<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
-<footer>
-	<div class="post-share-links">
-		<a href="https://twitter.com/intent/tweet?text=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Twitter"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
-		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Facebook"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
-		<a href="mailto:?subject=MeePwn%20CTF%202017%3A%20Simpler%20RSA%20%28100%29&amp;body=https%3A//aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
-	</div>
-</footer>
- 				</article>
-			</li>
-			<li>
-				<article class="archive">
-<header class="post">
-	<h1 class="archive-post-title">
 		<a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="bookmark" title="permalink to BTRFS: Access Beyond End of Device">BTRFS: Access Beyond End of Device</a>
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Fri 03 February 2017</abbr>
+	<abbr>Fri 10 February 2017</abbr>
 </div>					<div class="post-summary"> <p>TL;DR: There's a problem in my filesystem and it made my important
 file corrupted.</p>
 <hr>
