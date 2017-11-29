@@ -37,8 +37,10 @@
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Tue 28 November 2017</abbr> &#183;
-< 1 min read</div>		<p>We are given a file, <code>encrypt.py</code>, which looks as follows.</p>
+	<div class="post-date">
+		<abbr>Tue 28 November 2017</abbr> &#183;
+< 1 min read	</div>
+</div>		<p>We are given a file, <code>encrypt.py</code>, which looks as follows.</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kn">import</span> <span class="nn">os</span></span>
 <span class="code-line"><span class="kn">from</span> <span class="nn">flag</span> <span class="kn">import</span> <span class="n">flag</span></span>
 <span class="code-line"></span>
@@ -53,9 +55,9 @@
 </pre></div>
 
 
-<p>Each byte of the cipher is in form <span class="math">\((a+2*b) \mod 256\)</span>. Since finding <span class="math">\(a\)</span>, won't help us at this
+<p>Each byte of the cipher is in form <span class="math">\((a+2b)\mod{256}\)</span>. Since finding <span class="math">\(a\)</span>, won't help us at this
 point because <span class="math">\(b\)</span> will have two solutions, let's try find <span class="math">\(a\)</span> instead. The problem states that
-the cipher already include the CS2017{<flag>} format, so we can find <span class="math">\(b\)</span> for each byte by
+the cipher already include the <code>CS2017{&lt;flag&gt;}</code> format, so we can find <span class="math">\(b\)</span> for each byte by
 deciphering from the back. We assume the first character that we decipher (i.e. the last
 character of the cipher) is character <code>}</code>. Then, we can calculate <span class="math">\(a\)</span>, which will be the next
 <span class="math">\(b\)</span> for the next character.</p>
@@ -143,6 +145,9 @@ character of the cipher) is character <code>}</code>. Then, we can calculate <sp
 	</div>
 	<div class="post-summary">
 		<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>
+	</div>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/capture-the-fun-cyber-sea-game-2017.html">Capture The Fun: Cyber Sea Game 2017</a>
 	</div>
 	<div class="post-summary">
 		<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">TUCTF 2017: Crypto Clock (300)</a>

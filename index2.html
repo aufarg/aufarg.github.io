@@ -36,12 +36,56 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="archive-post-title">
+		<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html" rel="bookmark" title="permalink to TUCTF 2017: Guestbook (250)">TUCTF 2017: Guestbook (250)</a>
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Mon 27 November 2017</abbr> &#183;
+2 min read	</div>
+</div>					<div class="post-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
+to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16 …</span></span></pre></div>
+						<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">read more</a></div>
+				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="archive-post-title">
+		<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html" rel="bookmark" title="permalink to MeePwn CTF 2017: Simpler RSA (100)">MeePwn CTF 2017: Simpler RSA (100)</a>
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Tue 18 July 2017</abbr> &#183;
+2 min read	</div>
+</div>					<div class="post-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
+which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
+<code>simpe.py</code>.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
+<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">p …</span></span></pre></div>
+						<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
+				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="archive-post-title">
 		<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html" rel="bookmark" title="permalink to MeePwn CTF 2017: |\/|/-\T|-| (100)">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Tue 18 July 2017</abbr> &#183;
-2 min read</div>					<div class="post-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
+	<div class="post-date">
+		<abbr>Tue 18 July 2017</abbr> &#183;
+2 min read	</div>
+</div>					<div class="post-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
 <span class="code-line"><span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span></span>
 <span class="code-line"></span>
@@ -70,8 +114,10 @@
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Fri 10 February 2017</abbr> &#183;
-5 min read</div>					<div class="post-summary"> <p>TL;DR: There's a problem in my filesystem and it made my important
+	<div class="post-date">
+		<abbr>Fri 10 February 2017</abbr> &#183;
+5 min read	</div>
+</div>					<div class="post-summary"> <p>TL;DR: There's a problem in my filesystem and it made my important
 file corrupted.</p>
 <hr>
 <h5><em>What's the scariest thing that happened in your life?</em></h5>
@@ -88,8 +134,10 @@ BTRFS filesystem suddenly attempt to access beyond end of device …</p>
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Fri 10 February 2017</abbr> &#183;
-3 min read</div>					<div class="post-summary"> <p>In my school, there's a common dogma that software implementation is easy,
+	<div class="post-date">
+		<abbr>Fri 10 February 2017</abbr> &#183;
+3 min read	</div>
+</div>					<div class="post-summary"> <p>In my school, there's a common dogma that software implementation is easy,
 the hard part is designing. This dogma emerge as I take software engineering
 classes. The lecturers keep a big emphasize on how cool to design a software
 and how lame to implement a software. For me, I always …</p>

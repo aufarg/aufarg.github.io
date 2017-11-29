@@ -1,5 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _ - journal</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/journal.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2017-11-28T17:06:25+07:00</updated><entry><title>BTRFS: Access Beyond End of Device</title><link href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="alternate"></link><published>2017-02-10T02:29:43+07:00</published><updated>2017-11-28T17:06:25+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2017-02-10:/btrfs-access-beyond-end-of-device.html</id><summary type="html">&lt;p&gt;TL;DR: There's a problem in my filesystem and it made my important
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _ - journal</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/journal.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2017-11-29T11:49:36+07:00</updated><entry><title>Capture The Fun: Cyber Jawara 2017</title><link href="https://aufarg.github.io/capture-the-fun-cyber-jawara-2017.html" rel="alternate"></link><published>2017-11-29T11:49:36+07:00</published><updated>2017-11-29T11:49:36+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2017-11-29:/capture-the-fun-cyber-jawara-2017.html</id><summary type="html">&lt;p&gt;After a long time urging to write a
+(&lt;a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html"&gt;not-so-random&lt;/a&gt;) story in my blog,
+finally I had the time to actually write some things. For my debut on my own blog, the first
+thing to write that comes to mind is my Capture the Flag (CTF) story. We start right when …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a long time urging to write a
+(&lt;a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html"&gt;not-so-random&lt;/a&gt;) story in my blog,
+finally I had the time to actually write some things. For my debut on my own blog, the first
+thing to write that comes to mind is my Capture the Flag (CTF) story. We start right when I'm
+done with &lt;a href="https://en.wikipedia.org/wiki/Competitive_programming"&gt;competitive programming&lt;/a&gt; and
+start focusing for CTF (and struggling to graduate from my university). Let's start with a bit
+of introduction of my history in CTF events.&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Me and my &lt;a href="https://ctftime.org/team/16919"&gt;team&lt;/a&gt; have had quite a long time of history in CTF
+events. One of my friend, V, just happened to ask me to form a new CTF team with N (which is my
+friend too). At the time, I'm still excited learning Linux because I just recently learned to
+use it. I thought I can learn things about Linux there so why not? I accepted it and we form a
+new CTF team. Neat.&lt;/p&gt;
+&lt;p&gt;It was hard for us to learn things because there was no established CTF team in my university.
+Luckily for me, my two friend were pretty knowledgeable right off the bat. Apparently, V already
+doing reverse engineering since middle/high-school and N has done system administrator thingies.
+So I tried to learn things from them to catch up.&lt;/p&gt;
+&lt;p&gt;I won't talk much about things that had happened around this time. Mainly because I was focused
+more on doing competitive programming much more than CTF. But then I was also struggling to
+graduate and I can't give too much focus on CTF. So it wasn't until my next CTF competition that
+I learned I really need to catch up with people.&lt;/p&gt;
+&lt;h2&gt;The Dawn Age&lt;/h2&gt;
+&lt;p&gt;At some point in July, my team participate in CTF event called Computer Festival. It was a
+(supposed-to-be) nation-wide free-for-all CTF event. That means this event does not restrict
+participants by maximum age nor academic status (I think there's still restriction for minimum
+age). This is also the first event with my new temmate, J, which replace N.&lt;/p&gt;
+&lt;p&gt;It was on this event that I realized things cannot stay like this if I want to go with these
+people. I need to be able to contribute. At that time, my only merit is I can create
+shell-script quite fast to automate exploitation, which is quite useful for attack and defense
+style. But you can't get more points without the ability to exploit things. We ended up in 2nd
+place for this event, mostly because V is very skilled. I know I should increase the intensity
+for learning, especially because the winning team (let's call it Team US) have had beaten us
+more than I could count for.&lt;/p&gt;
+&lt;p&gt;The 1st through 3rd place of the event is invited to participate in Cyber Jawara, an annual
+nation-wide CTF event. I decided that I will learn more about cryptography and binary
+exploitation so I can contribute things there. With cryptography usually not included as on-site
+problems, I should pump up my binary exploitation skill. Searching for resources to learn
+binary exploitation, I tumbled upon &lt;a href="http://pwnable.kr"&gt;pwnable.kr&lt;/a&gt;. I spent my time until right
+before Cyber Jawara by preparing my graduation and do some pwnable.kr problems.&lt;/p&gt;
+&lt;p&gt;Then, the day had come.&lt;/p&gt;
+&lt;h2&gt;Cyber Jawara 2017&lt;/h2&gt;
+&lt;p&gt;The contest were split into 2 phase. The first phase is reverse engineering and forensic, and
+the second phase is web and binary exploitation. The first phase had 30% weight with
+jeopardy-style so we only need to solve the problems given to us. The second
+phase had 70% weight and we need to defend ourself from other team attacks by patching the
+service. No cryptography, I knew it. So the only chance for me to contribute is binary
+exploitation problems. I'm also quite lucky because the higher weight phase requires some
+automation that I can contribute at the very least.&lt;/p&gt;
+&lt;p&gt;For the first phase, no one in my team really understand forensic and their tools so we try to
+rack points from reverse engineering. Apparently, one of the problem require us to solve
+constraint satisfiability. This can be done with &lt;a href="https://github.com/Z3Prover/z3"&gt;Z3&lt;/a&gt;. But none
+of us know how to use it. So we were behind in term of points at this phase. I think we were
+behind by ~300 points.&lt;/p&gt;
+&lt;p&gt;For the second phase, V was racking up points from web problems. Me and J attempt the binary
+exploitation problem. J attempted the 300 points pwn, while I just tried to lessen their burden
+by doing 50 and 150 points pwn. The 50 points pwn is just a backdoor by putting some weird bytes
+before the payload so it's quite easy. I still took my time though because I'm slow when it
+comes to reading the application logic. I patched the binary by nop-ing the backdoor check then
+moved on to 150 points pwn. The 150 points pwn is pwning a python service + shell.  Great, it's
+NOT a BINARY exploitation. Well, at least I can solve it. It's kinda upsetting that the result
+of me practicing hours at pwnable.kr won't be seen here but I'm quite happy to contribute. I
+patched the 150 points pwn by making sure the python service is not pwnable and moved on to help
+J with 300 points.&lt;/p&gt;
+&lt;p&gt;At this point, V start asked for my help with automation and finding exploitation. He ended up
+finding them all by himself and I just help with the automation though. There was a weird 100
+points web problem that perplexed me and V. Apparently, it use a framework which you can access
+it's debugging console by going requesting &lt;code&gt;/console&lt;/code&gt;. Great, I missed reading the console part
+when I'm looking through the framework source code. Meanwhile, J had solved the problem and he
+needs a bit of time to patch it. We don't know if he'll made it in time. We were only winning
+the second phase by 90 points. Yes, if we calculate it right, we're still behind in term of
+total points (90x0.7 - 300x0.3). The good news is, J just finished patched the binary that he
+solved 3 minutes near the end of the contest. V and J already hoped that at least we get the 2nd
+place. I was still hoping for the X factor like binary-patching and writeups. Maybe there will
+be a miracle...&lt;/p&gt;
+&lt;p&gt;And it did happen.&lt;/p&gt;
+&lt;p&gt;We actually won the by measly amount of 50 or so points. Mind you, the total point is 3030
+points so it's a pretty slim difference. I don't know what's the cause but I'm happy anyway. I
+learned just how a small contribution could bring big impact to the table. We suspect that it's
+because J had the time to patched it and we got more points for it. If J doesn't start doing the
+300 points pwn right away, I'm pretty sure the result will be different.&lt;/p&gt;
+&lt;p&gt;In the end, I'm a bit upset that my contribution is still low but at least I made an impact
+there. At this point I had the momentum to keep learning for CTF events and will ride on it to
+keep contributing. Still, it was great pleasure to finally beat Team US after all this time.&lt;/p&gt;
+&lt;h2&gt;Notes&lt;/h2&gt;
+&lt;p&gt;This post is made 2 months after the event so I didn't recall some minutiae like phase weights
+and problem points. I try to write it as accurate as possible to make the reader aware what I
+felt and why I felt that way.&lt;/p&gt;
+&lt;p&gt;We wrote the writeups, but we haven't published it yet. Since it's a hassle to convert between
+Google Docs and Markdown, I'm not gonna do it. If you want to read the writeup you can contact
+me and maybe I can just dump the PDF version for you.&lt;/p&gt;</content><category term="cyber-jawara"></category><category term="ctf-story"></category></entry><entry><title>Capture The Fun: Cyber Sea Game 2017</title><link href="https://aufarg.github.io/capture-the-fun-cyber-sea-game-2017.html" rel="alternate"></link><published>2017-11-29T11:35:26+07:00</published><updated>2017-11-29T11:35:26+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2017-11-29:/capture-the-fun-cyber-sea-game-2017.html</id><summary type="html">&lt;h2&gt;After Cyber Jawara&lt;/h2&gt;
+&lt;p&gt;Me and my &lt;a href="https://ctftime.org/team/16919"&gt;team&lt;/a&gt; are fortunate enough to be selected to
+represent Indonesia in Cyber Sea Game 2017 as part of the 1st place prize. It's a CTF event held
+by partnership between Japan and ASEAN countries (I think, I'm not sure). The winner of the
+event …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;After Cyber Jawara&lt;/h2&gt;
+&lt;p&gt;Me and my &lt;a href="https://ctftime.org/team/16919"&gt;team&lt;/a&gt; are fortunate enough to be selected to
+represent Indonesia in Cyber Sea Game 2017 as part of the 1st place prize. It's a CTF event held
+by partnership between Japan and ASEAN countries (I think, I'm not sure). The winner of the
+event will be sent to &lt;a href="https://2017.seccon.jp"&gt;SECCON 2017&lt;/a&gt; as guest team. To be honest, the
+competition is a bit shady to me. There's no official website nor place to get information and
+the prize is too good to be true (it's very hard to pass SECCON quals). We only know that the
+event will be held in Thailand from Indonesian officials. As a good guy, I believe what the
+official said to me and practice for the game.&lt;/p&gt;
+&lt;p&gt;Call me skeptical, but I really thought that we will not win. Part of it because my teammates,
+V, says that Singapore and Vietnam team are pretty strong. Since he's our best member, I'm
+scared af to the point that I thought I'll just practice to make sure I'm not regretting it
+later without thinking the possibilities of winning.&lt;/p&gt;
+&lt;h2&gt;Preparing for Cyber Sea Game 2017&lt;/h2&gt;
+&lt;p&gt;As I was recently graduated, I had a ton of time to practice. But, even after graduating, I'm
+none of the wiser. Instead, I put half of my time playing some MMO game. Well, it's still half a
+ton of time to practice. Neato! I wasn't sure to ask my other teammates to practice together
+because I'm so bad and I'm afraid the intelligence among us is distributed (i.e. they become
+more stupid) because of me. So instead, I did what the loners do when they do things.
+Practicing alone.&lt;/p&gt;
+&lt;p&gt;I've always liked cryptography (mathematically, not technically) and binary exploitation. So
+that's what I practiced most of the time. Cryptography is quite hard to practice because usually
+cryptography exploitation in CTF events involves edge cases in the formula or has some gimmicky
+usage. So I just read some cool ctf writeups for cryptography to get the sense of what a
+cryptosystem could do, which part of the system are the weak links, etc. In constrat, binary
+exploitation is easier to practice because there are many wargames to practice on. I decide to
+just continue working through &lt;a href="http://pwnable.kr/"&gt;pwnable.kr&lt;/a&gt; challenges. The problems are
+unique for their own category so I won't be too familiar with the techniques, but it also means
+I could catch up (in term of knowledge) my teammate which specialize in binary exploitation.&lt;/p&gt;
+&lt;p&gt;Some days before the competition, suddenly there was an email from Japan side regarding
+registered participants. It appeared that they don't accommodate coaches, but the maximum of
+participants in a team is actually 4 persons. So after some short period of shocks, we need to
+search one more member.  So we asked the only person that we know we
+could-ask-to-fill-in-without-causing-too-much-drama. The problem-setter for Cyber Jawara. He
+accepted. We filled in. Yay.&lt;/p&gt;
+&lt;p&gt;Then, we went to Thailand (and skip to the contest right away)!&lt;/p&gt;
+&lt;h2&gt;The Cyber Sea Game 2017&lt;/h2&gt;
+&lt;p&gt;The contest was held in a meeting room (I think, I forgot) in Swissôtel Le Concorde. They
+created a local network platform which requires you to connect through an ethernet cable they
+provided and you can use Wi-Fi to browse the internet. I wonder why they limit local connection
+from the internet though. Maybe to prevent DOS? I'm not sure. They gave us time to setup the
+network and see if we had any problem, which unfortunately I had.&lt;/p&gt;
+&lt;p&gt;I learned that my &lt;a href="https://wiki.archlinux.org/index.php/netctl"&gt;network manager&lt;/a&gt; by default
+don't let me use both ethernet and Wi-Fi. I think there's a way to do it but I got no time so I
+just disconnect the ethernet when I want to browse the internet and connect to the ethernet when
+I want to submit flag.&lt;/p&gt;
+&lt;p&gt;Then, the contest begin. They give some problems. I don't remember the others, but they only
+give 2 crypto problems with 200 and 250 points, and 1 pwn problems with 300 points. Of course
+they'll give high point pwn problems first. So I decide to tackle the lowest crypto problems
+first. Seems like lady luck still hates me even after the network problem, and now I got a
+technical crypto problem involving &lt;a href="https://en.wikipedia.org/wiki/Public_key_certificate"&gt;digital
+certificate&lt;/a&gt;. Great. V solved a reverse
+engineering problem which give us 50 points. But then, Vietnam team got 160~ points. Cool. After
+two hours, I only able to extract some garbage message (which I think will be decrypted by some
+means) and extract the upper-level certificate. I don't actually understand what they do.
+Meanwhile, the Thailand team that already solve it, which give them 250~ points. Fortunately, on
+the brink of my despair, it was lunch time! After having so much fun munching tasty food, we go
+back to contest site. The first two hour, with only 50 points.&lt;/p&gt;
+&lt;p&gt;The second part of the contest begin, and then they released many problems altogether. In total,
+there were 30 problems available to solve. They actually released a &lt;a href="https://aufarg.github.io/cyber-sea-game-2017-addcrypto-50.html"&gt;50 point
+crypto&lt;/a&gt;. An original cryptosystem. With
+only math logic. Finally! That problem is actually my savior because it gives me the momentum
+that I need to solve other challenges. After solving other crypto problems, my teammates start
+to ask for help so we start working together on some weird challenges. One of the weird problems
+is a binary data file with a picture showing the hexdump result of the binary. The problem name
+is called md5, which is quite weird. We only realized that we need to take each line of the
+hexdump as md5 hexes and look it up in md5 databases. Sadly, we recovered the flag about 10
+seconds (!!!) after the contest is over.&lt;/p&gt;
+&lt;p&gt;Now the moment of truth is, the winner annoucement. While we managed to rack good amount of
+points, we were pretty nervous about the result as the scoreboard is frozen and we were on 3rd
+place on last update. To make it worse, Singapore team, who were at 2nd place, also yelling
+"Yesss" quite loudly near the end of the contest with a 400 point problem update to have 1 team
+solve. That means they got 400 points + 80 bonus points. Sigh. I still hoped to win. My teammates
+already lose hope because the only way for us to winning this to have the other teams not
+getting too much points and Singapore team not getting any other points beside the 400 points
+problem. Maybe another miracle will happen to us.&lt;/p&gt;
+&lt;p&gt;And it did happen. Again.&lt;/p&gt;
+&lt;p&gt;We won by 20 points difference from Singapore team.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Cyber Sea Game 2017 Scoreboard" src="https://aufarg.github.io/images/cyber-sea-game-2017-scoreboard.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;All of a sudden, all the weight from my shoulders disappeared and I see my teammates shocked
+and smiling happily. We actually won our first international CTF event. Winning also make us the
+guest team that will be sent to SECCON 2017. THE SECCON. After the event, we went to our room
+and rest. The next day, we took the flight home while being proud of our achievement (well, at
+least I did).&lt;/p&gt;
+&lt;p&gt;Overall, I'm very happy and thankful for my very skilled teammates, my friend (whom always
+remind me to practice), and Indonesian officials that made all of this possible.&lt;/p&gt;
+&lt;h2&gt;Notes&lt;/h2&gt;
+&lt;p&gt;For (successfully recovered) writeups, you can find it &lt;a href="/tag/cyber-sea-game.html"&gt;here&lt;/a&gt;. Some
+problems that I solved are not here because either it wasn't purely my work or some of the
+problem files cannot be found in my laptop.&lt;/p&gt;</content><category term="cyber-sea-game"></category><category term="ctf-story"></category></entry><entry><title>BTRFS: Access Beyond End of Device</title><link href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="alternate"></link><published>2017-02-10T02:29:43+07:00</published><updated>2017-11-28T17:06:25+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2017-02-10:/btrfs-access-beyond-end-of-device.html</id><summary type="html">&lt;p&gt;TL;DR: There's a problem in my filesystem and it made my important
 file corrupted.&lt;/p&gt;
 &lt;hr&gt;
 &lt;h5&gt;&lt;em&gt;What's the scariest thing that happened in your life?&lt;/em&gt;&lt;/h5&gt;

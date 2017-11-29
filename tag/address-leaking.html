@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <title>aufarg:/var/log $ _ <small>address-leaking</small></title>
+        <title>aufarg:/var/log $ _address-leaking</title>
 
         <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
@@ -40,8 +40,10 @@
 	</h1>
 </header>
 <div class="post-info">
-	<abbr>Mon 27 November 2017</abbr> &#183;
-2 min read</div>					<div class="post-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
+	<div class="post-date">
+		<abbr>Mon 27 November 2017</abbr> &#183;
+2 min read	</div>
+</div>					<div class="post-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
 to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
 <span class="code-line"><span class="p">{</span></span>
