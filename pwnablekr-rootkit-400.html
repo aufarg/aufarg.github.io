@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>aufarg:/var/log $ _</title>
+
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet"> 
+
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.min.css" type="text/css" />
+        <meta charset="utf-8" />
+
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
+		<nav>
+			<ol class="nav">
+				<li><a href="https://aufarg.github.io/categories.html">categories</a> </li>
+				<li><a href="https://aufarg.github.io/tags.html">tags</a> </li>
+				<li><a href="https://aufarg.github.io/archives.html">archive</a></li>
+			</ol>
+			<ul>
+			</ul>
+		</nav>
+	</header>
+	<div class="box">
+<section id="content" class="body">
+	<article class="post-content">
+<header class="post">
+	<h1 class="post-title">
+		pwnable.kr: rootkit (400)
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Fri 05 January 2018</abbr> &#183;
+4 min read	</div>
+</div>		<p>We are given a Linux Kernel Module named <code>rootkit</code> and a remote QEMU guest over
+ssh. Inside the remote QEMU guest, there's a file named <code>flag</code> which we can't
+open. There's also <code>rootkit.ko</code> which has the same hash digest as <code>rootkit</code>.
+Inspecting the syslog, there's a line which says <code>rootkit: module license
+'unspecified' taints kernel.</code> that's practically tells us that <code>rootkit.ko</code> is
+automatically loaded into the QEMU guest as it boots.  To be 100% sure, we can
+check that <code>/etc/init.d/rcS</code> contains <code>insmod /rootkit.ko</code>.</p>
+<p>Since we don't get the source code for the given LKM, let's try reverse
+engineer it in IDA. Decompilation in IDA shows that:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="nf">initmodule</span><span class="p">()</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v0</span><span class="p">;</span> <span class="c1">// eax@1</span></span>
+<span class="code-line">  <span class="n">_DWORD</span> <span class="o">*</span><span class="n">v1</span><span class="p">;</span> <span class="c1">// eax@1</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v2</span><span class="p">;</span> <span class="c1">// edx@1</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// eax@1</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="n">sct</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1050697696</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_open</span> <span class="o">=</span> <span class="n">vC15FA034</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_openat</span> <span class="o">=</span> <span class="n">vC15FA4BC</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_symlink</span> <span class="o">=</span> <span class="n">vC15FA16C</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_symlinkat</span> <span class="o">=</span> <span class="n">vC15FA4E0</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_link</span> <span class="o">=</span> <span class="n">vC15FA044</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_linkat</span> <span class="o">=</span> <span class="n">vC15FA4DC</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_rename</span> <span class="o">=</span> <span class="n">vC15FA0B8</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">sys_renameat</span> <span class="o">=</span> <span class="n">vC15FA4D8</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">wp</span><span class="p">();</span></span>
+<span class="code-line">  <span class="n">v0</span> <span class="o">=</span> <span class="n">sct</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">sct</span> <span class="o">+</span> <span class="mi">20</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_open_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">1180</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_openat_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">332</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_symlink_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">1216</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_symlinkat_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">36</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_link_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">1212</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_linkat_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">152</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_rename_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">1208</span><span class="p">)</span> <span class="o">=</span> <span class="n">sys_renameat_hooked</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">wp</span><span class="p">();</span></span>
+<span class="code-line">  <span class="n">v1</span> <span class="o">=</span> <span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">_this_module</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span></span>
+<span class="code-line">  <span class="n">v2</span> <span class="o">=</span> <span class="n">_this_module</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></span>
+<span class="code-line">  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v2</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">=</span> <span class="n">v1</span><span class="p">;</span></span>
+<span class="code-line">  <span class="o">*</span><span class="n">v1</span> <span class="o">=</span> <span class="n">v2</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">  <span class="n">_this_module</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_this_module</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></span>
+<span class="code-line">  <span class="n">_this_module</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_this_module</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="n">result</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>It seems that the LKM hijack a set of system calls by means of <a href="http://turbochaos.blogspot.co.id/2013/09/linux-rootkits-101-1-of-3.html">overwriting
+system call
+table</a>.
+The affected system calls are <code>open</code>, <code>openat</code>, <code>link</code>, <code>linkat</code>, <code>rename</code>,
+<code>renameat</code>. These are essentials system calls to read a file. Let's disassemble
+one of the hook function.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="nt">sys_open_hooked</span> <span class="nt">proc</span> <span class="nt">near</span>               <span class="o">;</span> <span class="nt">DATA</span> <span class="nt">XREF</span><span class="o">:</span> <span class="nt">initmodule</span><span class="o">+</span><span class="nt">69o</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000250</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000250</span> <span class="nt">arg_0</span>           <span class="o">=</span> <span class="nt">dword</span> <span class="nt">ptr</span>  <span class="nt">8</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000250</span> <span class="nt">arg_4</span>           <span class="o">=</span> <span class="nt">dword</span> <span class="nt">ptr</span>  <span class="nt">0Ch</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000250</span> <span class="nt">arg_8</span>           <span class="o">=</span> <span class="nt">dword</span> <span class="nt">ptr</span>  <span class="nt">10h</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000250</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000250</span>                 <span class="nt">push</span>    <span class="nt">ebp</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000251</span>                 <span class="nt">mov</span>     <span class="nt">ebp</span><span class="o">,</span> <span class="nt">esp</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000253</span>                 <span class="nt">push</span>    <span class="nt">ebx</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000254</span>                 <span class="nt">sub</span>     <span class="nt">esp</span><span class="o">,</span> <span class="nt">0Ch</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000257</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000257</span> <span class="nt">loc_8000257</span><span class="o">:</span>                            <span class="o">;</span> <span class="nt">DATA</span> <span class="nt">XREF</span><span class="o">:</span> <span class="nt">__mcount_loc</span><span class="p">:</span><span class="nd">0800040Co</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000257</span>                 <span class="nt">call</span>    <span class="nt">mcount</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800025C</span>                 <span class="nt">mov</span>     <span class="nt">edx</span><span class="o">,</span> <span class="nt">offset</span> <span class="nt">aFlag</span> <span class="o">;</span> <span class="s2">&quot;flag&quot;</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000261</span>                 <span class="nt">mov</span>     <span class="nt">ebx</span><span class="o">,</span> <span class="cp">[</span><span class="nx">ebp</span><span class="o">+</span><span class="nx">arg_0</span><span class="cp">]</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000264</span>                 <span class="nt">mov</span>     <span class="nt">eax</span><span class="o">,</span> <span class="nt">ebx</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000266</span>                 <span class="nt">call</span>    <span class="nt">strstr</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800026B</span>                 <span class="nt">test</span>    <span class="nt">eax</span><span class="o">,</span> <span class="nt">eax</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800026D</span>                 <span class="nt">jnz</span>     <span class="nt">short</span> <span class="nt">loc_800028C</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800026F</span>                 <span class="nt">mov</span>     <span class="nt">eax</span><span class="o">,</span> <span class="cp">[</span><span class="nx">ebp</span><span class="o">+</span><span class="nx">arg_8</span><span class="cp">]</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000272</span>                 <span class="nt">mov</span>     <span class="cp">[</span><span class="nx">esp</span><span class="cp">]</span><span class="o">,</span> <span class="nt">ebx</span>      <span class="o">;</span> <span class="nt">_DWORD</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000275</span>                 <span class="nt">mov</span>     <span class="cp">[</span><span class="nx">esp</span><span class="o">+</span><span class="mi">8</span><span class="cp">]</span><span class="o">,</span> <span class="nt">eax</span>    <span class="o">;</span> <span class="nt">_DWORD</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000279</span>                 <span class="nt">mov</span>     <span class="nt">eax</span><span class="o">,</span> <span class="cp">[</span><span class="nx">ebp</span><span class="o">+</span><span class="nx">arg_4</span><span class="cp">]</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800027C</span>                 <span class="nt">mov</span>     <span class="cp">[</span><span class="nx">esp</span><span class="o">+</span><span class="mi">4</span><span class="cp">]</span><span class="o">,</span> <span class="nt">eax</span>    <span class="o">;</span> <span class="nt">_DWORD</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000280</span>                 <span class="nt">call</span>    <span class="nt">ds</span><span class="p">:</span><span class="nd">sys_open</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000286</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000286</span> <span class="nt">loc_8000286</span><span class="o">:</span>                            <span class="o">;</span> <span class="nt">CODE</span> <span class="nt">XREF</span><span class="o">:</span> <span class="nt">sys_open_hooked</span><span class="o">+</span><span class="nt">4Bj</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000286</span>                 <span class="nt">add</span>     <span class="nt">esp</span><span class="o">,</span> <span class="nt">0Ch</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000289</span>                 <span class="nt">pop</span>     <span class="nt">ebx</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800028A</span>                 <span class="nt">pop</span>     <span class="nt">ebp</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800028B</span>                 <span class="nt">retn</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800028C</span> <span class="o">;</span> <span class="nt">---------------------------------------------------------------------------</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800028C</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800028C</span> <span class="nt">loc_800028C</span><span class="o">:</span>                            <span class="o">;</span> <span class="nt">CODE</span> <span class="nt">XREF</span><span class="o">:</span> <span class="nt">sys_open_hooked</span><span class="o">+</span><span class="nt">1Dj</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800028C</span>                 <span class="nt">mov</span>     <span class="nt">dword</span> <span class="nt">ptr</span> <span class="cp">[</span><span class="nx">esp</span><span class="cp">]</span><span class="o">,</span> <span class="nt">offset</span> <span class="nt">aYouWillNotSeeT</span> <span class="o">;</span> <span class="s2">&quot;You will not see the flag...\n&quot;</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000293</span>                 <span class="nt">call</span>    <span class="nt">printk</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">08000298</span>                 <span class="nt">or</span>      <span class="nt">eax</span><span class="o">,</span> <span class="nt">0FFFFFFFFh</span></span>
+<span class="code-line"><span class="p">.</span><span class="nc">text</span><span class="p">:</span><span class="nd">0800029B</span>                 <span class="nt">jmp</span>     <span class="nt">short</span> <span class="nt">loc_8000286</span></span>
+</pre></div>
+
+
+<p>The disassembly shows that the request is denied if there is a <code>flag</code> substring
+in the argument for the syscall, else it will fallback to the original system
+call.</p>
+<p>Okay, that's easy enough to fix. There is two ways that I thought of:
+- We can try removing the LKM.
+- We can just change the trigger for the hook function to something else other
+  than <code>flag</code>.
+- We just need to somehow restore the original system call for open/link/rename
+  which was overwritten.</p>
+<p>The first solution does not work because the module does not clean the system
+call table when it's unloaded. It doesn't even return anything so we can't
+<code>rmmod</code>. Well, at least we tried.</p>
+<p>The second solution is easy to implement. We can just do the following:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>sed -i rootkit.ko -e &#39;s/rootkit/rootkis/g&#39; # these line is needed so the module will not conflict with the original rootkit.ko</span>
+<span class="code-line">sed -i rootkit.ko -e &#39;s/flag/flig/g&#39;</span>
+</pre></div>
+
+
+<p>Unfortunately, the first solution does not work because the second hook will
+call the first hook instead of the original system call even if we bypass the
+trigger. This is because the <code>ds:sys_&lt;func&gt;</code> in hook function get its value
+from the system call table as we've seen in the <code>initmodule</code>'s disassembly:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">D0</span> <span class="no">initmodule</span>      <span class="no">proc</span> <span class="no">near</span>               <span class="c">; DATA XREF: .gnu.linkonce.this_module:08000678o</span></span>
+<span class="code-line"><span class="no">.init.text</span><span class="p">:</span><span class="mi">080002</span><span class="no">D0</span>                 <span class="no">push</span>    <span class="no">ebp</span>             <span class="c">; Alternative name is &#39;init_module&#39;</span></span>
+<span class="code-line"><span class="no">.init.text</span><span class="p">:</span><span class="mi">080002</span><span class="no">D1</span>                 <span class="no">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA034h</span> <span class="c">; sct is 0xC15FA020, sys_open is 0xC15FA034, which is sct + 20</span></span>
+<span class="code-line"><span class="no">.init.text</span><span class="p">:</span><span class="mi">080002</span><span class="no">D6</span>                 <span class="no">mov</span>     <span class="no">ebp</span><span class="p">,</span> <span class="no">esp</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">D8</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sct</span><span class="p">,</span> <span class="mi">0</span><span class="no">C15FA020h</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">E2</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_open</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">E7</span>                 <span class="no">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA4BCh</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">EC</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_openat</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">F1</span>                 <span class="no">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA16Ch</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">F6</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_symlink</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080002</span><span class="nf">FB</span>                 <span class="no">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA4E0h</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000300</span>                 <span class="nf">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_symlinkat</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000305</span>                 <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA044h</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800030</span><span class="nf">A</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_link</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800030</span><span class="nf">F</span>                 <span class="no">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA4DCh</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000314</span>                 <span class="nf">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_linkat</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000319</span>                 <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA0B8h</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800031</span><span class="nf">E</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_rename</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000323</span>                 <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="mi">0</span><span class="no">C15FA4D8h</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000328</span>                 <span class="nf">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">sys_renameat</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800032</span><span class="nf">D</span>                 <span class="no">xor</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800032</span><span class="nf">F</span>                 <span class="no">call</span>    <span class="no">wp</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000334</span>                 <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="no">sct</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000339</span>                 <span class="nf">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">14</span><span class="no">h</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_open_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000340</span>                 <span class="nf">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">49</span><span class="no">Ch</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_openat_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800034</span><span class="nf">A</span>                 <span class="no">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">14</span><span class="no">Ch</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_symlink_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000354</span>                 <span class="nf">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">4</span><span class="no">C0h</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_symlinkat_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800035</span><span class="nf">E</span>                 <span class="no">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">24</span><span class="no">h</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_link_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000365</span>                 <span class="nf">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">4</span><span class="no">BCh</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_linkat_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800036</span><span class="nf">F</span>                 <span class="no">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">98</span><span class="no">h</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_rename_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000379</span>                 <span class="nf">mov</span>     <span class="no">dword</span> <span class="no">ptr</span> <span class="p">[</span><span class="no">eax</span><span class="err">+</span><span class="mi">4</span><span class="no">B8h</span><span class="p">],</span> <span class="no">offset</span> <span class="no">sys_renameat_hooked</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000383</span>                 <span class="nf">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="mi">1</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000388</span>                 <span class="nf">call</span>    <span class="no">wp</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800038</span><span class="nf">D</span>                 <span class="no">mov</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="no">__this_module</span><span class="err">+</span><span class="mi">8</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000392</span>                 <span class="nf">mov</span>     <span class="no">edx</span><span class="p">,</span> <span class="no">ds</span><span class="p">:</span><span class="no">__this_module</span><span class="err">+</span><span class="mi">4</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">08000398</span>                 <span class="nf">mov</span>     <span class="p">[</span><span class="no">edx</span><span class="err">+</span><span class="mi">4</span><span class="p">],</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800039</span><span class="nf">B</span>                 <span class="no">mov</span>     <span class="p">[</span><span class="no">eax</span><span class="p">],</span> <span class="no">edx</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800039</span><span class="nf">D</span>                 <span class="no">xor</span>     <span class="no">eax</span><span class="p">,</span> <span class="no">eax</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">0800039</span><span class="nf">F</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">__this_module</span><span class="err">+</span><span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="no">offset</span> <span class="no">__this_module</span><span class="err">+</span><span class="mi">4</span><span class="p">)</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080003</span><span class="nf">A9</span>                 <span class="no">mov</span>     <span class="no">ds</span><span class="p">:</span><span class="no">__this_module</span><span class="err">+</span><span class="mi">8</span><span class="p">,</span> <span class="p">(</span><span class="no">offset</span> <span class="no">__this_module</span><span class="err">+</span><span class="mi">4</span><span class="p">)</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080003</span><span class="nf">B3</span>                 <span class="no">pop</span>     <span class="no">ebp</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080003</span><span class="nf">B4</span>                 <span class="no">retn</span></span>
+<span class="code-line"><span class="nl">.init.text:</span><span class="err">080003</span><span class="nf">B4</span> <span class="no">initmodule</span>      <span class="no">endp</span></span>
+</pre></div>
+
+
+<p>The third solution is implemented by changing where <code>ds:sys_&lt;func&gt;</code> from it's
+original system call address, i.e. change to:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>mov eax, &lt;original system call address&gt;</span>
+<span class="code-line">mov ds:sys_open, eax</span>
+</pre></div>
+
+
+<p>We can lookup the original system calls' address from <code>/proc/kallsyms</code>. For
+example, <code>sys_open</code> can be found by using:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>/ # grep sys_open /proc/kallsyms</span>
+<span class="code-line">c106c7c0 W compat_sys_open_by_handle_at</span>
+<span class="code-line">c1158bc0 T do_sys_open</span>
+<span class="code-line">c1158d70 T sys_open</span>
+<span class="code-line">c1158db0 T sys_openat</span>
+<span class="code-line">c11a37b0 T sys_open_by_handle_at</span>
+<span class="code-line">c11b47d0 t proc_sys_open</span>
+</pre></div>
+
+
+<p>So, we can change the opcode for loading the system call address to:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>mov eax, 0xc1158d70</span>
+</pre></div>
+
+
+<p>After that, we load the module with <code>insmod rootkit.ko</code> and then get the
+content of <code>flag</code> file (which is in gzip format).</p>
+<p>Flag is: <code>hidden because of pwnable.kr policy</code></p>
+<p>Fun fact: Why use disassemble for half of the writeup when we can decompile?
+Apparently, decompilation with IDA 6.8 misses some important parts. For
+example, the decompilation for hook function trigger yield this code:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">sys_open_hooked</span><span class="p">(</span><span class="kt">int</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">a2</span><span class="p">,</span> <span class="kt">int</span> <span class="n">a3</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// eax@2</span></span>
+<span class="code-line">  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">v4</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-10h]@0</span></span>
+<span class="code-line">  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">v5</span><span class="p">;</span> <span class="c1">// [sp+4h] [bp-Ch]@0</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="n">mcount</span><span class="p">();</span></span>
+<span class="code-line">  <span class="k">if</span> <span class="p">(</span> <span class="n">strstr</span><span class="p">(</span><span class="n">v4</span><span class="p">,</span> <span class="n">v5</span><span class="p">)</span> <span class="p">)</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="n">printk</span><span class="p">(</span><span class="s">&quot;You will not see the flag...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="k">else</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="n">sys_open</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">);</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="n">result</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>As you can see, it doesn't show the string <code>flag</code> is loaded into any of the
+local variables. It's weird that <code>strstr(v4, v5)</code> is done without any
+initialization on <code>v4</code> and <code>v5</code>. The dissassembly version is more complete so I
+prefer the disassembly version.</p>
+<footer>
+	<div class="post-share-links">
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/pwnablekr-rootkit-400.html" target="_blank" title="Share on Facebook"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="https://twitter.com/intent/tweet?text=pwnable.kr%3A%20rootkit%20%28400%29&url=https%3A//aufarg.github.io/pwnablekr-rootkit-400.html" target="_blank" title="Share on Twitter"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/pwnablekr-rootkit-400.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=pwnable.kr%3A%20rootkit%20%28400%29&amp;body=https%3A//aufarg.github.io/pwnablekr-rootkit-400.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+<div class="post-related">
+</div>	</article>
+</section>
+		<hr/>
+	</div>
+	<footer id="siteinfo" class="footer">
+		<div>
+			<a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+		</div>
+		<div>
+			powered by <a href="http://getpelican.com/">Pelican</a>
+			and <a href="http://python.org">Python</a>. 
+			Theme based on <a href="http://github.com/slok/iris">iris</a>
+		</div>
+		<div>
+			Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+			<a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+		</div>
+		<div class="social">
+			<a href="https://github.com/aufarg"><i class="fa fa-github-square"></i></a>
+			<a href="#"><i class="fa fa-Another social link-square"></i></a>
+			<a href="mailto:aufargilbran@gmail.com"><i class="fa fa-envelope-square"></i></a>
+		</div>
+	</footer>
+
+</body>
+</html>

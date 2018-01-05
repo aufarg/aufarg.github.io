@@ -36,6 +36,24 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="post-title">
+		pwnable.kr: rootkit (400)
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Fri 05 January 2018</abbr> &#183;
+4 min read	</div>
+</div>					<div class="post-summary"> <p>We are given a Linux Kernel Module named <code>rootkit</code> and a remote QEMU guest over
+ssh. Inside the remote QEMU guest, there's a file named <code>flag</code> which we can't
+open. There's also <code>rootkit.ko</code> which has the same hash digest as <code>rootkit</code>.
+Inspecting the syslog, there's a line which says …</p>
+						<a href="https://aufarg.github.io/pwnablekr-rootkit-400.html">read more</a></div>
+				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="post-title">
 		Cyber Sea Game 2017: addcrypto (50)
 	</h1>
 </header>
@@ -126,29 +144,6 @@ to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA w
 <span class="code-line"><span class="p">{</span></span>
 <span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16 …</span></span></pre></div>
 						<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">read more</a></div>
-				</article>
-			</li>
-			<li>
-				<article class="archive">
-<header class="post">
-	<h1 class="post-title">
-		MeePwn CTF 2017: Simpler RSA (100)
-	</h1>
-</header>
-<div class="post-info">
-	<div class="post-date">
-		<abbr>Tue 18 July 2017</abbr> &#183;
-2 min read	</div>
-</div>					<div class="post-summary"> <p>We are given two files: one is <code>simple.py</code>, which used to do an encryption, and <code>pubkey.txt</code>,
-which is the generated public key when encrypting with <code>simple.py</code>. Here's the content of
-<code>simpe.py</code>.</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
-<span class="code-line"><span class="kn">import</span> <span class="nn">random</span></span>
-<span class="code-line"><span class="c1"># from flag import FLAG</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">nbits</span><span class="p">):</span></span>
-<span class="code-line">    <span class="n">p …</span></span></pre></div>
-						<a href="https://aufarg.github.io/meepwn-ctf-2017-simpler-rsa-100.html">read more</a></div>
 				</article>
 			</li>
 		</ol>
