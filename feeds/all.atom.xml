@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-05T17:18:25+07:00</updated><entry><title>pwnable.kr: rootkit (400)</title><link href="https://aufarg.github.io/pwnablekr-rootkit-400.html" rel="alternate"></link><published>2018-01-05T17:18:25+07:00</published><updated>2018-01-05T17:18:25+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-05:/pwnablekr-rootkit-400.html</id><summary type="html">&lt;p&gt;We are given a Linux Kernel Module named &lt;code&gt;rootkit&lt;/code&gt; and a remote QEMU guest over
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-05T17:23:52+07:00</updated><entry><title>pwnable.kr: rootkit (400)</title><link href="https://aufarg.github.io/pwnablekr-rootkit-400.html" rel="alternate"></link><published>2018-01-05T17:23:52+07:00</published><updated>2018-01-05T17:23:20+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-05:/pwnablekr-rootkit-400.html</id><summary type="html">&lt;p&gt;We are given a Linux Kernel Module named &lt;code&gt;rootkit&lt;/code&gt; and a remote QEMU guest over
 ssh. Inside the remote QEMU guest, there's a file named &lt;code&gt;flag&lt;/code&gt; which we can't
 open. There's also &lt;code&gt;rootkit.ko&lt;/code&gt; which has the same hash digest as &lt;code&gt;rootkit&lt;/code&gt;.
 Inspecting the syslog, there's a line which says …&lt;/p&gt;</summary><content type="html">&lt;p&gt;We are given a Linux Kernel Module named &lt;code&gt;rootkit&lt;/code&gt; and a remote QEMU guest over
@@ -165,32 +165,17 @@ from the system call table as we've seen in the &lt;code&gt;initmodule&lt;/code&
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;The third solution is implemented by changing where &lt;code&gt;ds:sys_&amp;lt;func&amp;gt;&lt;/code&gt; from it's
-original system call address, i.e. change to:&lt;/p&gt;
+&lt;p&gt;The third solution is implemented by changing where &lt;code&gt;ds:sys_&amp;lt;func&amp;gt;&lt;/code&gt; load its
+value for old system call address, i.e. change to:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;mov eax, &amp;lt;original system call address&amp;gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;mov ds:sys_open, eax&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;We can lookup the original system calls' address from &lt;code&gt;/proc/kallsyms&lt;/code&gt;. For
-example, &lt;code&gt;sys_open&lt;/code&gt; can be found by using:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;/ # grep sys_open /proc/kallsyms&lt;/span&gt;
-&lt;span class="code-line"&gt;c106c7c0 W compat_sys_open_by_handle_at&lt;/span&gt;
-&lt;span class="code-line"&gt;c1158bc0 T do_sys_open&lt;/span&gt;
-&lt;span class="code-line"&gt;c1158d70 T sys_open&lt;/span&gt;
-&lt;span class="code-line"&gt;c1158db0 T sys_openat&lt;/span&gt;
-&lt;span class="code-line"&gt;c11a37b0 T sys_open_by_handle_at&lt;/span&gt;
-&lt;span class="code-line"&gt;c11b47d0 t proc_sys_open&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;So, we can change the opcode for loading the system call address to:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;mov eax, 0xc1158d70&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;p&gt;The exact method to find the original system call address is left as exercise
+for the reader :).&lt;/p&gt;
 &lt;p&gt;After that, we load the module with &lt;code&gt;insmod rootkit.ko&lt;/code&gt; and then get the
-content of &lt;code&gt;flag&lt;/code&gt; file (which is in gzip format).&lt;/p&gt;
+content of &lt;code&gt;flag&lt;/code&gt; file.&lt;/p&gt;
 &lt;p&gt;Flag is: &lt;code&gt;hidden because of pwnable.kr policy&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Fun fact: Why use disassemble for half of the writeup when we can decompile?
 Apparently, decompilation with IDA 6.8 misses some important parts. For

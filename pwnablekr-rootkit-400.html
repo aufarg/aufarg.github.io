@@ -203,32 +203,17 @@ from the system call table as we've seen in the <code>initmodule</code>'s disass
 </pre></div>
 
 
-<p>The third solution is implemented by changing where <code>ds:sys_&lt;func&gt;</code> from it's
-original system call address, i.e. change to:</p>
+<p>The third solution is implemented by changing where <code>ds:sys_&lt;func&gt;</code> load its
+value for old system call address, i.e. change to:</p>
 <div class="highlight"><pre><span class="code-line"><span></span>mov eax, &lt;original system call address&gt;</span>
 <span class="code-line">mov ds:sys_open, eax</span>
 </pre></div>
 
 
-<p>We can lookup the original system calls' address from <code>/proc/kallsyms</code>. For
-example, <code>sys_open</code> can be found by using:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>/ # grep sys_open /proc/kallsyms</span>
-<span class="code-line">c106c7c0 W compat_sys_open_by_handle_at</span>
-<span class="code-line">c1158bc0 T do_sys_open</span>
-<span class="code-line">c1158d70 T sys_open</span>
-<span class="code-line">c1158db0 T sys_openat</span>
-<span class="code-line">c11a37b0 T sys_open_by_handle_at</span>
-<span class="code-line">c11b47d0 t proc_sys_open</span>
-</pre></div>
-
-
-<p>So, we can change the opcode for loading the system call address to:</p>
-<div class="highlight"><pre><span class="code-line"><span></span>mov eax, 0xc1158d70</span>
-</pre></div>
-
-
+<p>The exact method to find the original system call address is left as exercise
+for the reader :).</p>
 <p>After that, we load the module with <code>insmod rootkit.ko</code> and then get the
-content of <code>flag</code> file (which is in gzip format).</p>
+content of <code>flag</code> file.</p>
 <p>Flag is: <code>hidden because of pwnable.kr policy</code></p>
 <p>Fun fact: Why use disassemble for half of the writeup when we can decompile?
 Apparently, decompilation with IDA 6.8 misses some important parts. For
