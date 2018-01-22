@@ -1,5 +1,5 @@
 header             { display: block !important;}
-body               { font-family: 'Lato', sans-serif; font-size: 1.4em; color: #444; }
+body               { font-family: 'Lato', sans-serif; font-size: 20px; color: #444; }
 a                  { color: #244371; }
 a:hover            { color: #D8651E; }
 .box               { width: 740px; margin: 30px auto; }
@@ -8,18 +8,18 @@ h1                 { margin: 0px 0px 0px 0px !important;
                      background: no-repeat center;
                      height: auto; }
 h1 span            { display: none; }
-.banner            { font-size: 2.4em; margin: 30px 0 11px 0;
+.banner            { font-size: 75px; margin: 30px 0 11px 0;
                      font-family: 'Open Sans Condensed', cursive;
                      text-align: center; }
 .banner a          { text-decoration: none; }
-h2                 { font-size: 2.0em; margin: 15px 0 5px 0; }
-h3                 { font-size: 1.8em; margin: 15px 0 5px 0; }
-h4                 { font-size: 1.6em; margin: 15px 0 5px 0; }
+h2                 { font-size: 30px; margin: 15px 0 5px 0; }
+h3                 { font-size: 24px; margin: 15px 0 5px 0; }
+h4                 { font-size: 19px; margin: 15px 0 5px 0; }
 img                { display: block; margin: 0 auto; }
 textarea,
 code, tt,
 pre                { font-family: 'Inconsolata', sans-serif, monospace!important;
-                     color: #000; font-size: 1.0em; background: #f3f3f3; }
+                     color: #000; font-size: 16px; background: #f3f3f3; }
 pre                { padding: 7px 7px; margin: 15px 5px; line-height: 1.3;
                      border-style:solid; border-width:1px; border-color:#bbb; word-wrap: break-word;}
 
@@ -31,7 +31,7 @@ ul                 { margin: 15px 0 15px 0; padding: 15px; list-style: none; lin
 ul li:before       { color: #888; position: absolute; margin-left: -19px; }
 ol                 { line-height: 1.4; margin: 15px 0 15px 30px; padding: 15px; }
 blockquote         { margin: 0; font-style: italic; color: #444; }
-.footer            { font-size: 0.9em; color: #888; text-align: center; margin-top: 25px; }
+.footer            { font-size: 13px; color: #888; text-align: center; margin-top: 25px; }
 .more              { text-align: right; margin-top: 0; font-size: 0.9em; font-style: italic; }
 .nav               { text-align: center; }
 .nav a             { font-style: ; }
@@ -87,7 +87,8 @@ nav        { background-color: #f4f4f4;
 .posts ul,
 .posts li             { list-style-type: none; padding: 0; }
 .posts li             { padding-bottom: 30px; }
-.posts a              { text-decoration: none; }
+.post                 { font-size: 50px; }
+.post a               { text-decoration: none; }
 .post-info            { font-size: 14px; color: #555; font-style: italic; padding-bottom: 21px; }
 .post-share-links     { font-size: 24px; text-align: right; padding: 2px; }
 .post-share-links a   { color: #555; }
@@ -98,7 +99,7 @@ article.archive       { margin-top: 10px; margin-bottom: 10px; }
 h1.archive-post-title,
 .post-title,
 h1.archive-post-title a { font-family: 'Open Sans Condensed', sans-serif; font-weight: bold;
-                           font-size: 1.4em; text-decoration: none; }
+                           font-size: 40px; text-decoration: none; }
 
 h1.archive-post-title   { margin: 0px 0px 0px 0px !important;
                            height: auto; }
