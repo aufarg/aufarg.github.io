@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-22T22:25:18+07:00</updated><entry><title>pwnable.kr: aeg (550)</title><link href="https://aufarg.github.io/pwnablekr-aeg-550.html" rel="alternate"></link><published>2018-01-22T22:25:18+07:00</published><updated>2018-01-22T22:25:18+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-22:/pwnablekr-aeg-550.html</id><summary type="html">&lt;p&gt;We are given an endpoint which we can connect to. The endpoint gives the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-22T22:26:18+07:00</updated><entry><title>pwnable.kr: aeg (550)</title><link href="https://aufarg.github.io/pwnablekr-aeg-550.html" rel="alternate"></link><published>2018-01-22T22:26:18+07:00</published><updated>2018-01-22T22:26:18+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-22:/pwnablekr-aeg-550.html</id><summary type="html">&lt;p&gt;We are given an endpoint which we can connect to. The endpoint gives the
 following banner right after we connected:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;---------------------------------------------------&lt;/span&gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;&lt;span class="gh"&gt;-  Welcome to AEG (Automatic Exploit Generation)  -&lt;/span&gt;&lt;/span&gt;
@@ -202,7 +202,7 @@ stack).&lt;/p&gt;
 - The PADDING for xor line (those cryptic &lt;code&gt;if&lt;/code&gt;s around the xor line).
 - The &lt;code&gt;dest&lt;/code&gt; file size (which determines the padding needed before rop addresses).
 - The offset from rbp for loading arguments in the gadget.&lt;/p&gt;
-&lt;h3&gt;Constraint Solver&lt;/h3&gt;
+&lt;h2&gt;Constraint Solver&lt;/h2&gt;
 &lt;p&gt;Prior solving the challenge, I've heard of constraint solver called
 &lt;a href="https://github.com/Z3Prover/z3"&gt;z3&lt;/a&gt;. I'm not really familiar with z3 but it's
 been used to solve problems where we need to search for the input, given the
@@ -257,7 +257,7 @@ of angr (as I've seen a better code with it later), but it works.&lt;/p&gt;
 
 &lt;p&gt;The function returns a tupple of the padding size needed at the exploitable
 function and the prefix needed to reach the function. Cool, huh?.&lt;/p&gt;
-&lt;h3&gt;Reading the XOR values&lt;/h3&gt;
+&lt;h2&gt;Reading the XOR values&lt;/h2&gt;
 &lt;p&gt;I should've been able to extract the XOR values using angr too.  Sadly, I
 didn't know how to use angr properly when I worked on this problem so I need to
 extract the XOR values directly from the disassembly. For that, I use r2pipe,
@@ -271,7 +271,7 @@ which is a python binding to interact with radare2 directly. Neat!&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;ROP crafting&lt;/h3&gt;
+&lt;h2&gt;ROP crafting&lt;/h2&gt;
 &lt;p&gt;Now, it's the headache part. The binary is dynamically linked so we can't
 create ROP chain out of thin air with ROPgadget. At first, I tried to leak the
 address of some functions using puts and then we can point to &lt;code&gt;system&lt;/code&gt;.

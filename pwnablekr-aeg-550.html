@@ -237,7 +237,7 @@ stack).</p>
 - The PADDING for xor line (those cryptic <code>if</code>s around the xor line).
 - The <code>dest</code> file size (which determines the padding needed before rop addresses).
 - The offset from rbp for loading arguments in the gadget.</p>
-<h3>Constraint Solver</h3>
+<h2>Constraint Solver</h2>
 <p>Prior solving the challenge, I've heard of constraint solver called
 <a href="https://github.com/Z3Prover/z3">z3</a>. I'm not really familiar with z3 but it's
 been used to solve problems where we need to search for the input, given the
@@ -292,7 +292,7 @@ of angr (as I've seen a better code with it later), but it works.</p>
 
 <p>The function returns a tupple of the padding size needed at the exploitable
 function and the prefix needed to reach the function. Cool, huh?.</p>
-<h3>Reading the XOR values</h3>
+<h2>Reading the XOR values</h2>
 <p>I should've been able to extract the XOR values using angr too.  Sadly, I
 didn't know how to use angr properly when I worked on this problem so I need to
 extract the XOR values directly from the disassembly. For that, I use r2pipe,
@@ -306,7 +306,7 @@ which is a python binding to interact with radare2 directly. Neat!</p>
 </pre></div>
 
 
-<h3>ROP crafting</h3>
+<h2>ROP crafting</h2>
 <p>Now, it's the headache part. The binary is dynamically linked so we can't
 create ROP chain out of thin air with ROPgadget. At first, I tried to leak the
 address of some functions using puts and then we can point to <code>system</code>.
