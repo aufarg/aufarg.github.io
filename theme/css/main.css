@@ -124,12 +124,14 @@ hr { border: 0; height: 0; border-top: 1px solid rgba(0, 0, 0, 0.1);
 /* For align center */
 .align-center { display: block; margin-left: auto; margin-right: auto }
 
-.highlight pre { white-space: pre-wrap;       /* css-3 */
-                 white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-                 white-space: -pre-wrap;      /* Opera 4-6 */
-                 white-space: -o-pre-wrap;    /* Opera 7 */
-                 word-wrap: break-word;       /* Internet Explorer 5.5+ */
-                 overflow: auto; }
+/* .highlight pre { white-space: pre-wrap;       /1* css-3 *1/ */
+/*                  white-space: -moz-pre-wrap;  /1* Mozilla, since 1999 *1/ */
+/*                  white-space: -pre-wrap;      /1* Opera 4-6 *1/ */
+/*                  white-space: -o-pre-wrap;    /1* Opera 7 *1/ */
+/*                  word-wrap: break-word;       /1* Internet Explorer 5.5+ *1/ */
+/*                  overflow: auto; } */
+
+.highlight pre { overflow: auto; }
 
 .highlight pre { counter-reset: linecounter; padding-left: 2em; }
 
