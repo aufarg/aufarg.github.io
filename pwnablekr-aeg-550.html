@@ -348,9 +348,9 @@ components to the XSAVE area located at the memory address specified by the
 destination operand.</p>
 </blockquote>
 <p>It's weird because it shouldn't mess with our payload. The <code>rsp</code> register will
-point to some weird memory location outside out buffer, but when we step right
-into the instruction, our payload become scattered. The instruction seems to
-work at page-level, but we can't separate the shellcode page and buffer page
+point to some weird memory location outside of the buffer, but when we step
+right into the instruction, our payload become scattered. The instruction seems
+to work at page-level, but we can't separate the shellcode page and buffer page
 because our input is limited to 1000 bytes (usual page is 4K in size).</p>
 <p>I'm frustrated again at this point and I just shuffle around the payload and I
 came up with the <code>input|pad|arguments|pad|shellcode</code> layout.</p>
