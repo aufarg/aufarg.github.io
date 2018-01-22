@@ -1,5 +1,5 @@
 header             { display: block !important;}
-body               { font-family: 'Lato', sans-serif; font-size: 20px; color: #444; }
+body               { font-family: 'Lato', sans-serif; font-size: 18px; color: #444; }
 a                  { color: #244371; }
 a:hover            { color: #D8651E; }
 .box               { width: 740px; margin: 30px auto; }
