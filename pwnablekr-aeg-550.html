@@ -232,11 +232,13 @@ because just accept 1 through 6 as arguments and it does nothing after that.</p>
 registers. This will be useful as a gadget when we're crafting ROP as the
 binary is in 64-bit (in which the arguments are passed through registers, not
 stack).</p>
-<p>But there's a catch, there's some parts of the binary that will be randomized.
-- The xor value.
-- The PADDING for xor line (those cryptic <code>if</code>s around the xor line).
-- The <code>dest</code> file size (which determines the padding needed before rop addresses).
-- The offset from rbp for loading arguments in the gadget.</p>
+<p>But there's a catch, there's some parts of the binary that will be randomized.</p>
+<ol>
+<li>The xor value.</li>
+<li>The PADDING for xor line (those cryptic <code>if</code>s around the xor line).</li>
+<li>The <code>dest</code> file size (which determines the padding needed before rop addresses).</li>
+<li>The offset from rbp for loading arguments in the gadget.</li>
+</ol>
 <h2>Constraint Solver</h2>
 <p>Prior solving the challenge, I've heard of constraint solver called
 <a href="https://github.com/Z3Prover/z3">z3</a>. I'm not really familiar with z3 but it's

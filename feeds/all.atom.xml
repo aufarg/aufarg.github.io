@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-22T22:27:01+07:00</updated><entry><title>pwnable.kr: aeg (550)</title><link href="https://aufarg.github.io/pwnablekr-aeg-550.html" rel="alternate"></link><published>2018-01-22T22:27:01+07:00</published><updated>2018-01-22T22:27:01+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-22:/pwnablekr-aeg-550.html</id><summary type="html">&lt;p&gt;We are given an endpoint which we can connect to. The endpoint gives the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/all.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-22T22:29:11+07:00</updated><entry><title>pwnable.kr: aeg (550)</title><link href="https://aufarg.github.io/pwnablekr-aeg-550.html" rel="alternate"></link><published>2018-01-22T22:29:11+07:00</published><updated>2018-01-22T22:28:57+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-22:/pwnablekr-aeg-550.html</id><summary type="html">&lt;p&gt;We are given an endpoint which we can connect to. The endpoint gives the
 following banner right after we connected:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;---------------------------------------------------&lt;/span&gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;&lt;span class="gh"&gt;-  Welcome to AEG (Automatic Exploit Generation)  -&lt;/span&gt;&lt;/span&gt;
@@ -197,11 +197,13 @@ because just accept 1 through 6 as arguments and it does nothing after that.&lt;
 registers. This will be useful as a gadget when we're crafting ROP as the
 binary is in 64-bit (in which the arguments are passed through registers, not
 stack).&lt;/p&gt;
-&lt;p&gt;But there's a catch, there's some parts of the binary that will be randomized.
-- The xor value.
-- The PADDING for xor line (those cryptic &lt;code&gt;if&lt;/code&gt;s around the xor line).
-- The &lt;code&gt;dest&lt;/code&gt; file size (which determines the padding needed before rop addresses).
-- The offset from rbp for loading arguments in the gadget.&lt;/p&gt;
+&lt;p&gt;But there's a catch, there's some parts of the binary that will be randomized.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The xor value.&lt;/li&gt;
+&lt;li&gt;The PADDING for xor line (those cryptic &lt;code&gt;if&lt;/code&gt;s around the xor line).&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;dest&lt;/code&gt; file size (which determines the padding needed before rop addresses).&lt;/li&gt;
+&lt;li&gt;The offset from rbp for loading arguments in the gadget.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;h2&gt;Constraint Solver&lt;/h2&gt;
 &lt;p&gt;Prior solving the challenge, I've heard of constraint solver called
 &lt;a href="https://github.com/Z3Prover/z3"&gt;z3&lt;/a&gt;. I'm not really familiar with z3 but it's
