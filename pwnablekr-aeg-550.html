@@ -173,7 +173,7 @@ kind of constraint. The last function called by the 16th function looked like th
 
 <p>It's just plain old buffer overflow vulnerability. So basically, what we need
 to do is have our payload prefixed by some value that will satisfy the
-constraints imposed by preceeding functions i.e. <code>&lt;prefix&gt;+&lt;payload&gt;</code>.</p>
+constraints imposed by preceeding functions i.e. <code>&lt;prefix&gt;&lt;payload&gt;</code>.</p>
 <p>There's also <code>sub_8034990()</code> function which is weird if you see it at first
 because just accept 1 through 6 as arguments and it does nothing after that.</p>
 <div class="highlight"><pre><span class="code-line"><span></span><span class="kr">__int64</span> <span class="nf">sub_803496D</span><span class="p">()</span></span>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _ - ctf-writeup</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/ctf-writeup.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-22T22:26:18+07:00</updated><entry><title>pwnable.kr: aeg (550)</title><link href="https://aufarg.github.io/pwnablekr-aeg-550.html" rel="alternate"></link><published>2018-01-22T22:26:18+07:00</published><updated>2018-01-22T22:26:18+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-22:/pwnablekr-aeg-550.html</id><summary type="html">&lt;p&gt;We are given an endpoint which we can connect to. The endpoint gives the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _ - ctf-writeup</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/ctf-writeup.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-01-22T22:27:01+07:00</updated><entry><title>pwnable.kr: aeg (550)</title><link href="https://aufarg.github.io/pwnablekr-aeg-550.html" rel="alternate"></link><published>2018-01-22T22:27:01+07:00</published><updated>2018-01-22T22:27:01+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-01-22:/pwnablekr-aeg-550.html</id><summary type="html">&lt;p&gt;We are given an endpoint which we can connect to. The endpoint gives the
 following banner right after we connected:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gh"&gt;---------------------------------------------------&lt;/span&gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;&lt;span class="gh"&gt;-  Welcome to AEG (Automatic Exploit Generation)  -&lt;/span&gt;&lt;/span&gt;
@@ -138,7 +138,7 @@ kind of constraint. The last function called by the 16th function looked like th
 
 &lt;p&gt;It's just plain old buffer overflow vulnerability. So basically, what we need
 to do is have our payload prefixed by some value that will satisfy the
-constraints imposed by preceeding functions i.e. &lt;code&gt;&amp;lt;prefix&amp;gt;+&amp;lt;payload&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+constraints imposed by preceeding functions i.e. &lt;code&gt;&amp;lt;prefix&amp;gt;&amp;lt;payload&amp;gt;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;There's also &lt;code&gt;sub_8034990()&lt;/code&gt; function which is weird if you see it at first
 because just accept 1 through 6 as arguments and it does nothing after that.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;__int64&lt;/span&gt; &lt;span class="nf"&gt;sub_803496D&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;/span&gt;
