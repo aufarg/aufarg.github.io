@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _ - journal</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/journal.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-04-05T22:59:46+07:00</updated><entry><title>Capture The Fun: SECCON 2017 Final International Competition</title><link href="https://aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html" rel="alternate"></link><published>2018-04-05T22:59:46+07:00</published><updated>2018-04-05T22:59:46+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-04-05:/capture-the-fun-seccon-2017-final-international-competition.html</id><summary type="html">&lt;p&gt;This is the last part of the Capture The Fun series. Somehow, I just got the mood to write this
+<feed xmlns="http://www.w3.org/2005/Atom"><title>aufarg:/var/log $ _ - journal</title><link href="https://aufarg.github.io/" rel="alternate"></link><link href="https://aufarg.github.io/feeds/journal.atom.xml" rel="self"></link><id>https://aufarg.github.io/</id><updated>2018-04-05T23:12:10+07:00</updated><entry><title>Capture The Fun: SECCON 2017 Final International Competition</title><link href="https://aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html" rel="alternate"></link><published>2018-04-05T23:12:10+07:00</published><updated>2018-04-05T23:12:10+07:00</updated><author><name>Aufar Gilbran</name></author><id>tag:aufarg.github.io,2018-04-05:/capture-the-fun-seccon-2017-final-international-competition.html</id><summary type="html">&lt;p&gt;This is the last part of the Capture The Fun series. Somehow, I just got the mood to write this
 now. Yes, 6 weeks after the event. I was busy dealing with life (career, family, and such).
 Well, actually most of my time was spent on learning pwn. I feel …&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is the last part of the Capture The Fun series. Somehow, I just got the mood to write this
 now. Yes, 6 weeks after the event. I was busy dealing with life (career, family, and such).
@@ -11,11 +11,12 @@ CTF.&lt;/p&gt;
 writing a resume took me a TON of time. Like, I actually start writing the resume in the October
 of 2017 and it was done in December of 2017. It's kinda scary if I claim to know a certain
 thing, let's say, Python, and the interviewer goes "Oh really, well how about you explain
-\&amp;lt;insert some weird language intricacies&gt;".  Well, I won't go into more details but real life
-is what I've done until the the event is held.&lt;/p&gt;
-&lt;p&gt;Oh, we actually participate in the SECCON 2017 Online CTF. But instead of "we", it's actually an
-"I". I can only get about 1400 points alone. One of my teammates got the extra 500 points tho so
-it's cool. But that left us at 86th place. Well, not bad considering I'm the worst in the team.&lt;/p&gt;
+&amp;lt;insert some weird language intricacies&gt;".  Well, I won't go into more details but real life
+is what I've done until the event's date.&lt;/p&gt;
+&lt;p&gt;Oh I almost, we participated in the SECCON 2017 Online CTF. But instead of "we", it's actually
+an "I". I can only get about 1400 points alone. One of my teammates got the extra 500 points tho
+so it's cool. But that left us at &lt;a href="https://ctftime.org/event/512"&gt;86th place&lt;/a&gt;. Well, not bad
+considering I'm the worst in the team.&lt;/p&gt;
 &lt;h2&gt;SECCON 2017 Final International Competition (Day 1)&lt;/h2&gt;
 &lt;p&gt;The contest is in King of the Hill format and running for about 7 hours for 2 days. So it's a 14
 hours contest, but you can still try to solve the task in the mean time. For the tasks, we are
@@ -36,7 +37,7 @@ code will receive a certain request and should respond with the appropriate resp
 will be executed as a cgi. Every 5 minutes, the judge will then start to do some sequential
 requests and check if we return the appropriate response. If our code give all the correct
 response, our score is the execution time. Else, we got 9999 for our execution time. If we can
-do it below 20s, we got the flag.&lt;/p&gt;
+do it below 20s, we got the flag (there's only one for this one).&lt;/p&gt;
 &lt;p&gt;Optimizing the code is actually quite straight forward. The problem is, they only provide a
 manual checking request 7 minutes after the last request. At first, I spent about 3 hours stuck
 at 9999, because I don't know what kind of response we should give (I was trying to respond with
@@ -63,18 +64,20 @@ Like 10 of 50% increase factor, instead of one 200% increase. I know that I miss
 optimization. Do I need to make the image processing faster with C? But the code used opencv
 module which is already implemented in C (I think), so it will not be that big.&lt;/p&gt;
 &lt;p&gt;After thinking a bit while being kinda desperate, I realized that since it's an image, I should
-try having a faster I/O. Wait, I/O? Raspberry Pi disk an SD Card. It will be pretty slow, at
-least much slower than my laptop's harddrive. Now that I think about it, Raspberry Pi processor
-is also slower than my laptop. So I try to hijack the Raspberry Pi IP address so the judge will
-send the request to my laptop instead. And... it's 1.6s. Yep, it's 2.5x times faster, the big
-bottleneck that I'm searching. I think it's already the peak of possible optimization and with
-that, my team get the defense point untill the end of the competition. Near the end of
+try having a faster I/O. Wait, I/O? Raspberry Pi storage is an SD Card. It will be pretty slow, at
+least much slower than my laptop's harddrive. Now that I think about it, Raspberry Pi processing
+power is also slower than my laptop. So I try to hijack the Raspberry Pi IP address so the judge
+will send the request to my laptop instead. And... it's 1.6s. Yep, it's 2.5x times faster, the
+big bottleneck that I'm searching. I think it's already the peak of possible optimization and
+with that, my team get the defense point untill the end of the competition. Near the end of
 competition tho, team 217 occassionally got the defense point, meaning they also got to the
 peak. Mine still have better runtime in most cases tho, might be because I try so hard
 optimizing the little things.&lt;/p&gt;
-&lt;h1&gt;Competition Result&lt;/h1&gt;
-&lt;p&gt;In the end, my team ended up in &lt;a href="https://ctftime.org/event/510"&gt;8th place&lt;/a&gt; (there's some problem
-in the scoreboard, my team is actually &lt;a href="https://ctftime.org/team/16919"&gt;this one&lt;/a&gt;). But I'm
+&lt;h2&gt;Competition Result&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="SECCON 2017 Final International Competition
+Scoreboard" src="https://aufarg.github.io/images/seccon-2017-final-scoreboard.jpg"&gt;
+In the end, my team ended up in &lt;a href="https://ctftime.org/event/510"&gt;8th place&lt;/a&gt; (there's some problem
+in the CTF Time's scoreboard, my team is actually &lt;a href="https://ctftime.org/team/16919"&gt;this one&lt;/a&gt;). But I'm
 actually quite sad because I tried to solve the jeopardy pwn task, but I can't do it. Meanwhile,
 this optimization task isn't a security thing. I bet most of the other team not spending so much
 time in the task. So yeah, next is learn more pwn.&lt;/p&gt;
