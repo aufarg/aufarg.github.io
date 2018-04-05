@@ -89,18 +89,18 @@ But I guess that's what it should be in real life scenario. To be honest, the ru
 fun than normal jeopardy.</p>
 <p>I only worked on the optimization tasks. We are given a Raspberry Pi with a code in it. The
 code will receive a certain request and should respond with the appropriate response. The code
-will be executed as a cgi. Every 5 minutes, the judge will then start to do some sequential
+will be executed as a CGI. Every 5 minutes, the judge will then start to do some sequential
 requests and check if we return the appropriate response. If our code give all the correct
 response, our score is the execution time. Else, we got 9999 for our execution time. If we can
 do it below 20s, we got the flag (there's only one for this one).</p>
-<p>Optimizing the code is actually quite straight forward. The problem is, they only provide a
-manual checking request 7 minutes after the last request. At first, I spent about 3 hours stuck
-at 9999, because I don't know what kind of response we should give (I was trying to respond with
-succesful HTTP response). They give us a local checker, but it doesn't actually check the
-correctness. It just send a HTTP request like what the judge would do without actually checking
-whether the response it gets is right. After, looking at the code, I learn that it gives the
-judge some images of Bingo boards and the request is changing the color of a number on any board
-that has the number.</p>
+<p>Optimizing the code is actually quite straight forward, like not using CGI, remove inefficient
+part of the code, etc. The problem is, they only provide a manual checking request 7 minutes
+after the last request. At first, I spent about 3 hours stuck at 9999, because I don't know what
+kind of response we should give (I was trying to respond with succesful HTTP response). They
+give us a local checker, but it doesn't actually check the correctness. It just send a HTTP
+request like what the judge would do without actually checking whether the response it gets is
+right. After, looking at the code, I learn that it gives the judge some images of Bingo boards
+and the request is changing the color of a number on any board that has the number.</p>
 <p>So, we weren't meant to modify that could make the output different and we should
 only make it more efficient. It took me 5 hours to realize this (yes, I'm so stupid). Since I
 only got 2 hours to optimize the code, I only have the chance to get the flag. I still have to
