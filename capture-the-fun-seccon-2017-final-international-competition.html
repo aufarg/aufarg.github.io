@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>aufarg:/var/log $ _</title>
+
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet"> 
+
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/main.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/pygments.css" type="text/css" />
+        <link rel="stylesheet" href="https://aufarg.github.io/theme/css/font-awesome.min.css" type="text/css" />
+        <meta charset="utf-8" />
+
+
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <div class="banner"><a href="https://aufarg.github.io">aufarg:/var/log $ _ <strong></strong></a></div>
+		<nav>
+			<ol class="nav">
+				<li><a href="https://aufarg.github.io/categories.html">categories</a> </li>
+				<li><a href="https://aufarg.github.io/tags.html">tags</a> </li>
+				<li><a href="https://aufarg.github.io/archives.html">archive</a></li>
+			</ol>
+			<ul>
+			</ul>
+		</nav>
+	</header>
+	<div class="box">
+<section id="content" class="body">
+	<article class="post-content">
+<header class="post">
+	<h1 class="post-title">
+		Capture The Fun: SECCON 2017 Final International Competition
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Thu 05 April 2018</abbr> &#183;
+6 min read	</div>
+	<div class="post-series-parts">
+		<p>This post is part 3 of the "Capture The Fun" series:</p>
+		<ol>
+			<li >
+				<a href="https://aufarg.github.io/capture-the-fun-cyber-jawara-2017.html">Capture The Fun: Cyber Jawara 2017</a>
+			</li>
+			<li >
+				<a href="https://aufarg.github.io/capture-the-fun-cyber-sea-game-2017.html">Capture The Fun: Cyber Sea Game 2017</a>
+			</li>
+			<li class="active">
+				<a href="https://aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html">Capture The Fun: SECCON 2017 Final International Competition</a>
+			</li>
+		</ol>
+	</div>
+</div>		<p>This is the last part of the Capture The Fun series. Somehow, I just got the mood to write this
+now. Yes, 6 weeks after the event. I was busy dealing with life (career, family, and such).
+Well, actually most of my time was spent on learning pwn. I feel like I'm really far behind
+people so I tried to learn pwn like crazy. But, here goes the story of me and my team in SECCON
+CTF.</p>
+<h2>After Cyber Sea Games</h2>
+<p>Not much to tell here since I'm applying for a job. Since I'm not really confident in my skill,
+writing a resume took me a TON of time. Like, I actually start writing the resume in the October
+of 2017 and it was done in December of 2017. It's kinda scary if I claim to know a certain
+thing, let's say, Python, and the interviewer goes "Oh really, well how about you explain
+\&lt;insert some weird language intricacies>".  Well, I won't go into more details but real life
+is what I've done until the the event is held.</p>
+<p>Oh, we actually participate in the SECCON 2017 Online CTF. But instead of "we", it's actually an
+"I". I can only get about 1400 points alone. One of my teammates got the extra 500 points tho so
+it's cool. But that left us at 86th place. Well, not bad considering I'm the worst in the team.</p>
+<h2>SECCON 2017 Final International Competition (Day 1)</h2>
+<p>The contest is in King of the Hill format and running for about 7 hours for 2 days. So it's a 14
+hours contest, but you can still try to solve the task in the mean time. For the tasks, we are
+given some services, and we should get the flag from those services. Each service might have
+more than one flag though so we need to look deeper even after getting a flag. A flag will give
+you 100 "Attack Points". Much like the good ol' jeopardy-style.</p>
+<p>The fun part is, each of these services ask you to get the best solution possible, depending on
+the task. There's a code golf task which requires you to write the shortest possible brainfuck
+code to spew "Hello World". There's also an optimization task which requires you to make the
+response time of a certain code as fast as possible. If your solution is currently the best, you
+got a "Defense Points". On each tick (IIRC, it is every 5 minutes), the platform will check the
+team with best solution and grant a moderate amount of 20 points. The tick will only be count in
+the 14 hours of contest. Basically, a flag is equal to 5 ticks/25 minutes. It's quite weird
+because then the first team to get best solution will snowball. But I guess that's what it
+should be in real life scenario. To be honest, the rule kinda makes it more fun.</p>
+<p>I only worked on the optimization tasks. We are given a Raspberry Pi with a code in it. The
+code will receive a certain request and should respond with the appropriate response. The code
+will be executed as a cgi. Every 5 minutes, the judge will then start to do some sequential
+requests and check if we return the appropriate response. If our code give all the correct
+response, our score is the execution time. Else, we got 9999 for our execution time. If we can
+do it below 20s, we got the flag.</p>
+<p>Optimizing the code is actually quite straight forward. The problem is, they only provide a
+manual checking request 7 minutes after the last request. At first, I spent about 3 hours stuck
+at 9999, because I don't know what kind of response we should give (I was trying to respond with
+succesful HTTP response). They give us a local checker, but it doesn't actually check the
+correctness. It just send a HTTP request like what the judge would do without actually checking
+whether the response it gets is right. But, looking at the code, I learn that it gives the judge some
+images of Bingo boards and the request is changing the color of a number on any board that has
+the number. So, we weren't meant to modify that could make the output different and we should
+only make it more efficient. It took me 5 hours to realize this (yes, I'm so stupid).  Since I
+only got 2 hours to optimize the code, I only have the chance to get the flag. I still have to
+catch up with the other team (mine is 2x slower). I need to optimize it even at the
+hotel.</p>
+<h2>SECCON 2017 Final International Competition (Day 2)</h2>
+<p>The next day, I tried the optimization, and it's actually slower by 2x! The judge
+increase the difficulty of the requests (increase the number of boards and number to cancel). My
+solution is doing 4x the other team. It's still quite good tho because the other team is at 5s,
+and mine is 21s. So I kept on optimizing slowly but surely till mine is at 3.8s, but the other
+team is at 3.3s. But then, I realized something. There should be a plateau to optimizations. If
+I'm late at optimizing, I should have a better ratio than the other team that already optimized
+it earlier because I could eliminate a bigger bottleneck than them. But, at the start of day,
+the ratio between the speed of my solution and their solution increase instead from 2x to 4x.
+While I could the runtime from 21s to 3.8, it's actually consists of small but many speed ups.
+Like 10 of 50% increase factor, instead of one 200% increase. I know that I missed a big
+optimization. Do I need to make the image processing faster with C? But the code used opencv
+module which is already implemented in C (I think), so it will not be that big.</p>
+<p>After thinking a bit while being kinda desperate, I realized that since it's an image, I should
+try having a faster I/O. Wait, I/O? Raspberry Pi disk an SD Card. It will be pretty slow, at
+least much slower than my laptop's harddrive. Now that I think about it, Raspberry Pi processor
+is also slower than my laptop. So I try to hijack the Raspberry Pi IP address so the judge will
+send the request to my laptop instead. And... it's 1.6s. Yep, it's 2.5x times faster, the big
+bottleneck that I'm searching. I think it's already the peak of possible optimization and with
+that, my team get the defense point untill the end of the competition. Near the end of
+competition tho, team 217 occassionally got the defense point, meaning they also got to the
+peak. Mine still have better runtime in most cases tho, might be because I try so hard
+optimizing the little things.</p>
+<h1>Competition Result</h1>
+<p>In the end, my team ended up in <a href="https://ctftime.org/event/510">8th place</a> (there's some problem
+in the scoreboard, my team is actually <a href="https://ctftime.org/team/16919">this one</a>). But I'm
+actually quite sad because I tried to solve the jeopardy pwn task, but I can't do it. Meanwhile,
+this optimization task isn't a security thing. I bet most of the other team not spending so much
+time in the task. So yeah, next is learn more pwn.</p>
+<p>What makes me more sad is, because how far we are from the other teams regarding the
+understanding of things. I tried eavesdropping their discussion about a certain problem, but I
+didn't understand ANY of it. Not only we didn't understand enough to solve the task, we didn't
+understand enough to learn from the other teams to fix our incapabilities. That is really sucks.</p>
+<h1>Afterevent</h1>
+<p>There's an afterevent party which the organizer unofficially held. We thought afterevent party
+will have so many alcoholic beverages (which we should avoid), so we go back to our hotel. The
+next day, we EXPLORE JAPAN! ... which I won't be covering here.</p>
+<p>So, that's it. I think that, it's quite a valuable experience competing with the top CTF teams
+in the world. I learnt that, we (especially me) are still quite far from being one of the good
+CTF teams. But that's exactly what motivates me to learn more about it. I hope we will get
+another chance to compete with this environment again, but next time, we'll be stronger and
+could actually learn together with the other top teams.</p>
+<p>See ya in another series (if I got another chance).</p>
+<footer>
+	<div class="post-share-links">
+		<a href="http://www.facebook.com/sharer/sharer.php?u=https%3A//aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html" target="_blank" title="Share on Facebook"><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+		<a href="https://twitter.com/intent/tweet?text=Capture%20The%20Fun%3A%20SECCON%202017%20Final%20International%20Competition&url=https%3A//aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html" target="_blank" title="Share on Twitter"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+		<a href="https://plus.google.com/share?url=https%3A//aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html" target="_blank" title="Share on Google Plus"><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		<a href="mailto:?subject=Capture%20The%20Fun%3A%20SECCON%202017%20Final%20International%20Competition&amp;body=https%3A//aufarg.github.io/capture-the-fun-seccon-2017-final-international-competition.html" target="_blank" title="Share via Email"><i class="fa fa-envelope-square" aria-hidden="true"></i></a>
+	</div>
+</footer>
+<div class="post-related">
+	<h3>Related Posts</h3>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/capture-the-fun-cyber-jawara-2017.html">Capture The Fun: Cyber Jawara 2017</a>
+	</div>
+	<div class="post-summary">
+		<a href="https://aufarg.github.io/capture-the-fun-cyber-sea-game-2017.html">Capture The Fun: Cyber Sea Game 2017</a>
+	</div>
+</div>	</article>
+</section>
+		<hr/>
+	</div>
+	<footer id="siteinfo" class="footer">
+		<div>
+			<a href="https://aufarg.github.io">Aufar Gilbran</a> (2012)
+		</div>
+		<div>
+			powered by <a href="http://getpelican.com/">Pelican</a>
+			and <a href="http://python.org">Python</a>. 
+			Theme based on <a href="http://github.com/slok/iris">iris</a>
+		</div>
+		<div>
+			Icons from Font Awesome by <a href="http://fontawesome.io/"> font awesome</a>.
+			<a href="https://fonts.google.com/specimen/Open+Sans+Condensed">Title & headers</a>, <a href="https://fonts.google.com/specimen/Lato">body</a> and <a href="https://fonts.google.com/specimen/Inconsolata">source code</a> fonts by google fonts
+		</div>
+		<div class="social">
+			<a href="https://github.com/aufarg"><i class="fa fa-github-square"></i></a>
+			<a href="#"><i class="fa fa-Another social link-square"></i></a>
+			<a href="mailto:aufargilbran@gmail.com"><i class="fa fa-envelope-square"></i></a>
+		</div>
+	</footer>
+
+</body>
+</html>

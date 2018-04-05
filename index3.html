@@ -36,6 +36,38 @@
 				<article class="archive">
 <header class="post">
 	<h1 class="archive-post-title">
+		<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html" rel="bookmark" title="permalink to MeePwn CTF 2017: |\/|/-\T|-| (100)">MeePwn CTF 2017: |\/|/-\T|-| (100)</a>
+	</h1>
+</header>
+<div class="post-info">
+	<div class="post-date">
+		<abbr>Tue 18 July 2017</abbr> &#183;
+2 min read	</div>
+</div>					<div class="post-summary"> <p>We are given a file, <code>hack.py</code>, which looks as follows.</p>
+<div class="highlight"><pre><span class="code-line"><span></span><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span></span>
+<span class="code-line"><span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">flag</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span></span>
+<span class="code-line"><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span></span>
+<span class="code-line"><span class="n">pad</span> <span class="o">=</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">md5</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">())</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="n">hack</span> <span class="o">=</span> <span class="mi">0</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">flag</span><span class="p">:</span></span>
+<span class="code-line">    <span class="n">hack</span><span class="o">+=</span> <span class="n">pad</span></span>
+<span class="code-line">    <span class="n">hack</span><span class="o">*=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="k">print</span> <span class="n">hack</span></span>
+<span class="code-line"><span class="k">print</span> <span class="n">pad</span></span>
+<span class="code-line"><span class="k">print</span> <span class="n">hack</span> <span class="o">%</span> <span class="n">pad</span></span>
+<span class="code-line"><span class="c1">#hack …</span></span></pre></div>
+						<a href="https://aufarg.github.io/meepwn-ctf-2017-t-100.html">read more</a></div>
+				</article>
+			</li>
+			<li>
+				<article class="archive">
+<header class="post">
+	<h1 class="archive-post-title">
 		<a href="https://aufarg.github.io/btrfs-access-beyond-end-of-device.html" rel="bookmark" title="permalink to BTRFS: Access Beyond End of Device">BTRFS: Access Beyond End of Device</a>
 	</h1>
 </header>
