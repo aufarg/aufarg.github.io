@@ -66,10 +66,10 @@ of 2017 and it was done in December of 2017. It's kinda scary if I claim to know
 thing, let's say, Python, and the interviewer goes "Oh really, well how about you explain
 &lt;insert some weird language intricacies>".  Well, I won't go into more details but real life
 is what I've done until the event's date.</p>
-<p>Oh I almost, we participated in the SECCON 2017 Online CTF. But instead of "we", it's actually
-an "I". I can only get about 1400 points alone. One of my teammates got the extra 500 points tho
-so it's cool. But that left us at <a href="https://ctftime.org/event/512">86th place</a>. Well, not bad
-considering I'm the worst in the team.</p>
+<p>Oh I almost forgot, we participated in the SECCON 2017 Online CTF. But instead of "we", it's
+actually an "I". I can only get about 1400 points alone. One of my teammates got the extra 500
+points tho so it's cool. But that left us at <a href="https://ctftime.org/event/512">86th place</a>. Well,
+not bad considering I'm the worst in the team.</p>
 <h2>SECCON 2017 Final International Competition (Day 1)</h2>
 <p>The contest is in King of the Hill format and running for about 7 hours for 2 days. So it's a 14
 hours contest, but you can still try to solve the task in the mean time. For the tasks, we are
@@ -82,9 +82,11 @@ code to spew "Hello World". There's also an optimization task which requires you
 response time of a certain code as fast as possible. If your solution is currently the best, you
 got a "Defense Points". On each tick (IIRC, it is every 5 minutes), the platform will check the
 team with best solution and grant a moderate amount of 20 points. The tick will only be count in
-the 14 hours of contest. Basically, a flag is equal to 5 ticks/25 minutes. It's quite weird
-because then the first team to get best solution will snowball. But I guess that's what it
-should be in real life scenario. To be honest, the rule kinda makes it more fun.</p>
+the 14 hours of contest. Basically, a flag is equal to 5 ticks/25 minutes.</p>
+<p>At first, the format is quite weird because then the first team to get best solution will
+snowball (you can get 14<em>12</em>20=3360 points for each task if you always be the king). But I guess
+that's what it should be in real life scenario. To be honest, the rule makes it more fun than
+normal jeopardy.</p>
 <p>I only worked on the optimization tasks. We are given a Raspberry Pi with a code in it. The
 code will receive a certain request and should respond with the appropriate response. The code
 will be executed as a cgi. Every 5 minutes, the judge will then start to do some sequential
@@ -96,10 +98,11 @@ manual checking request 7 minutes after the last request. At first, I spent abou
 at 9999, because I don't know what kind of response we should give (I was trying to respond with
 succesful HTTP response). They give us a local checker, but it doesn't actually check the
 correctness. It just send a HTTP request like what the judge would do without actually checking
-whether the response it gets is right. But, looking at the code, I learn that it gives the judge some
-images of Bingo boards and the request is changing the color of a number on any board that has
-the number. So, we weren't meant to modify that could make the output different and we should
-only make it more efficient. It took me 5 hours to realize this (yes, I'm so stupid).  Since I
+whether the response it gets is right. After, looking at the code, I learn that it gives the
+judge some images of Bingo boards and the request is changing the color of a number on any board
+that has the number.</p>
+<p>So, we weren't meant to modify that could make the output different and we should
+only make it more efficient. It took me 5 hours to realize this (yes, I'm so stupid). Since I
 only got 2 hours to optimize the code, I only have the chance to get the flag. I still have to
 catch up with the other team (mine is 2x slower). I need to optimize it even at the
 hotel.</p>
@@ -108,24 +111,28 @@ hotel.</p>
 increase the difficulty of the requests (increase the number of boards and number to cancel). My
 solution is doing 4x the other team. It's still quite good tho because the other team is at 5s,
 and mine is 21s. So I kept on optimizing slowly but surely till mine is at 3.8s, but the other
-team is at 3.3s. But then, I realized something. There should be a plateau to optimizations. If
-I'm late at optimizing, I should have a better ratio than the other team that already optimized
-it earlier because I could eliminate a bigger bottleneck than them. But, at the start of day,
-the ratio between the speed of my solution and their solution increase instead from 2x to 4x.
-While I could the runtime from 21s to 3.8, it's actually consists of small but many speed ups.
-Like 10 of 50% increase factor, instead of one 200% increase. I know that I missed a big
-optimization. Do I need to make the image processing faster with C? But the code used opencv
-module which is already implemented in C (I think), so it will not be that big.</p>
+team is at 3.3s.</p>
+<p>But then, I realized something. There should be a plateau to optimizations. If I'm late at
+optimizing, I should have a better ratio than the other team that already optimized it earlier
+because I could eliminate a bigger bottleneck than them. But, at the start of day, the ratio
+between the speed of my solution and their solution increase instead from 2x to 4x.  While I
+could the runtime from 21s to 3.8, it's actually consists of small but many speed ups.  Like 10
+of 50% increase factor, instead of one 200% increase.</p>
+<p>Now I know that I missed a big optimization.  Do I need to make the image processing faster with
+C? But the code used opencv module which is already implemented in C (I think), so it will not
+be that big. Should I use C for the server? Nah, serving the image is much more slower than the
+processing time the server need. There must be something outside the code that I could improve.
+Something related to technical limitations instead of algorithm efficiency.</p>
 <p>After thinking a bit while being kinda desperate, I realized that since it's an image, I should
 try having a faster I/O. Wait, I/O? Raspberry Pi storage is an SD Card. It will be pretty slow, at
 least much slower than my laptop's harddrive. Now that I think about it, Raspberry Pi processing
 power is also slower than my laptop. So I try to hijack the Raspberry Pi IP address so the judge
 will send the request to my laptop instead. And... it's 1.6s. Yep, it's 2.5x times faster, the
-big bottleneck that I'm searching. I think it's already the peak of possible optimization and
-with that, my team get the defense point untill the end of the competition. Near the end of
-competition tho, team 217 occassionally got the defense point, meaning they also got to the
-peak. Mine still have better runtime in most cases tho, might be because I try so hard
-optimizing the little things.</p>
+big bottleneck that I'm searching.</p>
+<p>I think it's already the peak of possible optimization and with that, my team get the defense
+point untill the end of the competition. Near the end of competition tho, team 217 occassionally
+got the defense point, meaning they also got to the peak. Mine still have better runtime in most
+cases tho, might be because I try so hard optimizing the little things.</p>
 <h2>Competition Result</h2>
 <p><img alt="SECCON 2017 Final International Competition
 Scoreboard" src="https://aufarg.github.io/images/seccon-2017-final-scoreboard.jpg">
